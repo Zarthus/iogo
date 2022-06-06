@@ -1,29 +1,61 @@
 package main
 
 import (
+	"flag"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
+	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"os"
 	"time"
 )
 
-func main() {
-	exitCode := demo(os.Args)
+var (
+	confirmFlag  = flag.Bool("confirm", false, "use a confirmation question")
+	selectFlag   = flag.Bool("select", false, "use a multiple-choice selection")
+	progressFlag = flag.Bool("progress", false, "shows a progress bar")
+	helpFlag     = flag.Bool("help", false, "show help text")
+)
 
-	if exitCode != 0 {
-		os.Exit(exitCode)
-	}
+const helpText = "iogo " + iogo.Version + "\n\n" +
+	"USAGE:\n" +
+	"  --help      this help text\n" +
+	"  --confirm   use a confirmation question\n" +
+	"  --select    use a multiple-choice selection\n" +
+	"  --progress  show a progress bar\n\n"
+
+type flags struct {
+	confirmFlag  bool
+	selectFlag   bool
+	progressFlag bool
+	helpFlag     bool
 }
 
-func demo(args []string) int {
-	rw := style.CreateDefaultReadWriter()
-	sel, conf, prog, exitcode := parseOpts(rw, args)
-	if exitcode >= 0 {
-		return exitcode
+func main() {
+	flag.Parse()
+	f := flags{
+		confirmFlag:  *confirmFlag,
+		selectFlag:   *selectFlag,
+		progressFlag: *progressFlag,
+		helpFlag:     *helpFlag,
 	}
 
-	inp, err := readInput(rw, sel, conf, prog)
+	os.Exit(demo(f))
+}
+
+func demo(f flags) int {
+	rw := style.CreateDefaultReadWriter()
+
+	if f.helpFlag {
+		rw.Writer().Write(helpText)
+		return 0
+	}
+	if f.selectFlag && f.confirmFlag {
+		rw.Writer().WriteLine("Options --confirm and --select cannot be used in conjunction")
+		return 1
+	}
+
+	inp, err := readInput(rw, f)
 
 	if err != nil {
 		rw.Writer().WriteLine("error! " + err.Error())
@@ -34,73 +66,37 @@ func demo(args []string) int {
 	return 0
 }
 
-func parseOpts(rw iogo.Iogo, args []string) (bool, bool, bool, int) {
-	sel, conf, prog := false, false, false
-	exitcode := -1
-
-	for _, arg := range args {
-		if arg == "--select" {
-			sel = true
-		}
-		if arg == "--confirm" {
-			conf = true
-		}
-		if arg == "--progress" {
-			prog = true
-		}
-		if arg == "--help" {
-			exitcode = 0
-			rw.Writer().Write(
-				"iogo " + iogo.Version + "\n\n" +
-					"USAGE:\n" +
-					"  --help      this help text\n" +
-					"  --confirm   use a confirmation question\n" +
-					"  --select    use a multiple-choice selection\n" +
-					"  --progress  show a progress bar\n\n",
-			)
-		}
-	}
-
-	if sel && conf {
-		rw.Writer().WriteLine("options --confirm and --select cannot be used in conjunction")
-		return sel, conf, prog, 1
-	}
-
-	return sel, conf, prog, exitcode
-}
-
-func readInput(io iogo.Iogo, sel bool, conf bool, prog bool) (string, error) {
-	var inp string
-	var err error
-
-	options := iogo.Options{
+func readInput(rw iogo.Iogo, f flags) (string, error) {
+	opts := iogo.Options{
 		DoNotTrack: true,
 	}
 
-	io.Style().Output().Title("Welcome to iogo!")
-	inpstyle := io.Style().Input()
-	if !sel && !conf {
-		inp, err = inpstyle.Prompt("Please insert text:", options)
-	} else if sel {
-		inp, err = inpstyle.Select("Pick a number:", []string{"one", "two", "three"}, options)
-	} else if conf {
-		options.Default = "n"
-		conf, err = inpstyle.Confirm("Do you agree to the terms and conditions?", options)
+	rw.Style().Output().Title("Welcome to iogo!")
+	inStyle := rw.Style().Input()
 
-		if conf {
-			inp = "You confirmed!"
-		} else {
-			inp = "You did not confirm."
-		}
-	}
-
-	if prog {
+	if f.progressFlag {
 		bar := progress.NewDefaultProgressBar(10)
-		io.Style().Output().Progress(bar, func(progressBar iogo.ProgressBar) {
+		descriptor := "Determining which input to offer.."
+		fmter := formatter.NewSimpleProgressBarFormatter(&descriptor)
+		rw.Style().Output().Progress(bar, func(progressBar iogo.ProgressBar) {
 			progressBar.Advance(1)
 			time.Sleep(100 * time.Millisecond)
-		}, nil)
+		}, &fmter)
 	}
 
-	return inp, err
+	if f.confirmFlag {
+		opts.Default = "n"
+
+		if confirmed, err := inStyle.Confirm("Do you agree to the terms and conditions?", opts); err != nil {
+			return "", err
+		} else if confirmed {
+			return "You confirmed!", nil
+		} else {
+			return "You did not confirm.", nil
+		}
+	} else if f.selectFlag {
+		return inStyle.Select("Pick a number:", []string{"one", "two", "three"}, opts)
+	} else {
+		return inStyle.Prompt("Please insert text:", opts)
+	}
 }
