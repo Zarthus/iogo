@@ -19,7 +19,7 @@ func TestRender(t *testing.T) {
 	}
 
 	msg := writer.Get()[0]
-	expected := "[###       ] 3/10"
+	expected := "[###       ]  3/10 ( 30.0%)"
 	if !strings.Contains(msg, expected) {
 		t.Fatalf("Expected message to look like a specific format, \nexpected: %s\n   given: %s", expected, msg)
 	}
