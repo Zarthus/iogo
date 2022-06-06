@@ -12,7 +12,7 @@ type defaultIo struct {
 	style  iogo.Style
 }
 
-func CreateDefaultIo() iogo.Io {
+func CreateDefaultReadWriter() iogo.Iogo {
 	writ, read := writer.NewDefaultWriter(), reader.NewInMemoryReader()
 	return defaultIo{
 		writer: writ,

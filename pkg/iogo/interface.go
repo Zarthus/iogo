@@ -2,7 +2,7 @@ package iogo
 
 // Reader is an interface that defines minimistically how to read from somewhere (that is a terminal/tty/some form of stdin)
 type Reader interface {
-	// ReadLine reads input into a string
+	// ReadLine reads input into a string.
 	ReadLine(options Options) (string, error)
 
 	// Reset the state of the Reader, this clears any history and state.
@@ -73,9 +73,9 @@ type Style interface {
 	Output() WriterStyle
 }
 
-// Io is the combination of input (Reader) and output (Writer) offering the bare essentials,
+// Iogo is the combination of input (Reader) and output (Writer) offering the bare essentials,
 // and Style which adds the extra flavour you actually need to make things pretty and awesome.
-type Io interface {
+type Iogo interface {
 	Reader() Reader
 	Writer() Writer
 	Style() Style
