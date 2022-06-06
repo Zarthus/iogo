@@ -82,9 +82,9 @@ type Io interface {
 // ProgressBar helps render progress on some task
 type ProgressBar interface {
 	// Render the current progress bar to the display
-	Render()
-	// SetRefreshInterval updates how often the progress bar calls Render
-	SetRefreshInterval(interval float32)
+	// You are responsible yourself for ensuring a proper refresh interval
+	// If you don't call render frequently, your progress bar will appear stale.
+	Render() string
 
 	// Advance the progress bar by num, or up until Maximum is reached.
 	Advance(num uint)
@@ -111,7 +111,8 @@ type HistoryTracker interface {
 	// Track a new item to history
 	Track(item string)
 	// Untrack removes an existing item from history
-	Untrack(item string)
+	// Returns boolean true if item is found and removed, false otherwise
+	Untrack(item string) bool
 	// Save the current history for later re-use, if the current implementation supports saving.
 	// Returns a bool true if saving was successful, or false if it wasn't.
 	Save() bool

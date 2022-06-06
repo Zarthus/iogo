@@ -1,6 +1,9 @@
 package history
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestTracker_Get(t *testing.T) {
 	hist := NewHistoryTracker([]string{"foo", "bar"})
@@ -25,6 +28,19 @@ func TestTracker_Track(t *testing.T) {
 
 	hist.Track("bar")
 	assertLength(t, 2, len(hist.Get()))
+}
+
+func TestTracker_Untrack(t *testing.T) {
+	hist := NewHistoryTracker([]string{"foo", "bar", "baz"})
+
+	assertLength(t, 3, len(hist.Get()))
+
+	hist.Untrack("bar")
+	assertLength(t, 2, len(hist.Get()))
+
+	if strings.Contains(strings.Join(hist.Get(), ","), "bar") {
+		t.Fatalf("Expected element 'bar' not to be in list: %s", strings.Join(hist.Get(), ","))
+	}
 }
 
 func assertLength(t *testing.T, length int, actual int) {

@@ -25,3 +25,7 @@ func (style defaultStyle) Input() iogo.ReaderStyle {
 func (style defaultStyle) Output() iogo.WriterStyle {
 	return style.output
 }
+
+func (style defaultStyle) Progress(bar iogo.ProgressBar) {
+	// TODO: implement me
+}
