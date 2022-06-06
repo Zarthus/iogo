@@ -59,7 +59,7 @@ func (style readerStyle) Confirm(prompt string, options iogo.Options) (bool, err
 func (style readerStyle) Select(prompt string, valid []string, options iogo.Options) (string, error) {
 	var safeValid []string
 	for _, value := range valid {
-		safeValid = append(safeValid, value)
+		safeValid = append(safeValid, regexp.QuoteMeta(value))
 	}
 	selectRegexp := regexp.MustCompile("^" + strings.Join(safeValid, "|") + "$")
 
