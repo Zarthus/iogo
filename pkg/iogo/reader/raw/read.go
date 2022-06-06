@@ -4,11 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	"os"
+	"io"
 )
 
-func Read(tracker iogo.HistoryTracker) (string, error) {
-	r := bufio.NewReader(os.Stdin)
+func Read(rd io.Reader, tracker iogo.HistoryTracker) (string, error) {
+	r := bufio.NewReader(rd)
 	keyUp, keyDown := byte(iogo.KeyUp), byte(iogo.KeyDown)
 
 	var buf bytes.Buffer

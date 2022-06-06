@@ -4,6 +4,7 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/reader/history"
 	"github.com/zarthus/iogo/v2/pkg/iogo/reader/raw"
+	"os"
 )
 
 // Maintains an active list of history based in memory
@@ -19,7 +20,7 @@ func NewInMemoryReader() *inMemoryReader {
 }
 
 func (r inMemoryReader) Readln(options iogo.Options) (string, error) {
-	input, err := raw.Read(r.history)
+	input, err := raw.Read(os.Stdin, r.history)
 
 	if err != nil {
 		return r.fallback(input, &options), err
