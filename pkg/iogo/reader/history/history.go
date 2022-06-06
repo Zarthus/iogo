@@ -20,8 +20,8 @@ func (t tracker) Untrack(item string) {
 	panic("implement me") // TODO: implement
 }
 
-func (t tracker) Save() {
-	panic("implement me") // TODO: implement
+func (t tracker) Save() bool {
+	return false
 }
 
 func (t *tracker) Reset() {
