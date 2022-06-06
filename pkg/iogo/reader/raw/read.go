@@ -2,19 +2,18 @@ package raw
 
 import (
 	"bufio"
+	"bytes"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"os"
 )
 
 func Read(tracker iogo.HistoryTracker) (string, error) {
-	reader := bufio.NewReader(os.Stdin)
+	r := bufio.NewReader(os.Stdin)
 	keyUp, keyDown := byte(iogo.KeyUp), byte(iogo.KeyDown)
 
-	var bytes []byte
+	var buf bytes.Buffer
 	for {
-		b, err := reader.ReadByte()
-
-		if err != nil {
+		if b, err := r.ReadByte(); err != nil {
 			//if err == io.EOF {
 			//	break
 			//}
@@ -26,9 +25,9 @@ func Read(tracker iogo.HistoryTracker) (string, error) {
 		} else if b == '\n' {
 			break
 		} else {
-			bytes = append(bytes, b)
+			buf.WriteByte(b)
 		}
 	}
 
-	return string(bytes), nil
+	return buf.String(), nil
 }
