@@ -2,8 +2,8 @@ package iogo
 
 // Reader is an interface that defines minimistically how to read from somewhere (that is a terminal/tty/some form of stdin)
 type Reader interface {
-	// ReadLine reads input into a string.
-	ReadLine(options Options) (string, error)
+	// Readln reads input into a string.
+	Readln(opts Options) (string, error)
 
 	// Reset the state of the Reader, this clears any history and state.
 	Reset()
@@ -12,21 +12,21 @@ type Reader interface {
 // Writer is an interface that defines minimistically how to write to something (that is a terminal/tty/file/some form of stdin)
 type Writer interface {
 	// Write to the output source of the Writer, without ensuring CRLF or LF at the end.
-	Write(message string)
-	// WriteLine writes to the output source of the Writer, ensuring CRLF or LF at the end.
-	WriteLine(message string)
+	Write(msg string)
+	// Writeln writes to the output source of the Writer, ensuring CRLF or LF at the end.
+	Writeln(msg string)
 }
 
 // ReaderStyle is a helpful subset of helper methods that help receive input in a desired format.
 // Despite being largely dependent on the Reader, it also writes output in many cases.
 type ReaderStyle interface {
 	// Prompt the input source of the Reader a free-style question
-	Prompt(prompt string, options Options) (string, error)
+	Prompt(prompt string, opts Options) (string, error)
 	// Confirm the input source of the Reader a yes or no question
-	Confirm(prompt string, options Options) (bool, error)
+	Confirm(prompt string, opts Options) (bool, error)
 	// Select a multiple-choice input to the input source of the Reader, ensuring the return value is one
 	// of the items given in valid
-	Select(prompt string, valid []string, options Options) (string, error)
+	Select(prompt string, valid []string, opts Options) (string, error)
 }
 
 // WriterStyle is a helpful subset of helper methods that help format output in a desired format.
@@ -37,28 +37,28 @@ type WriterStyle interface {
 	// message
 	// =======
 	//
-	Title(message string)
+	Title(msg string)
 	// Section writes a section to the output of the Writer, by default,
 	// it looks something like this, based on implementation and term support:
 	// message
 	// =======
-	Section(message string)
+	Section(msg string)
 
 	// Block writes a block to the output of the Writer, by default,
 	// it looks something like this, based on implementation and term support:
 	//
 	//   message
 	//
-	Block(message string, options Options)
+	Block(msg string, opts Options)
 
 	// Info is an alias for Block with appropriate colour (if supported), or a sane fallback
-	Info(message string)
+	Info(msg string)
 	// Success is an alias for Block with appropriate colour (if supported), or a sane fallback
-	Success(message string)
+	Success(msg string)
 	// Warning is an alias for Block with appropriate colour (if supported), or a sane fallback
-	Warning(message string)
+	Warning(msg string)
 	// Error is an alias for Block with appropriate colour (if supported), or a sane fallback
-	Error(message string)
+	Error(msg string)
 
 	// Progress Renders starts the Progress bar, and loops the runnable until the bar is finished.
 	// It is expected that the inside of the runnable calls ProgressBar.Advance to ensure the bar finishes

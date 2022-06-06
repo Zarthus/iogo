@@ -2,8 +2,8 @@ package progress
 
 import "github.com/zarthus/iogo/v2/pkg/iogo"
 
-func Render(writer iogo.Writer, bar iogo.ProgressBar, formatter iogo.ProgressBarFormatter) {
+func Render(w iogo.Writer, bar iogo.ProgressBar, formatter iogo.ProgressBarFormatter) {
 	formatted := formatter.Format(bar)
 
-	writer.WriteLine(formatted)
+	w.Writeln(formatted)
 }

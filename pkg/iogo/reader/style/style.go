@@ -23,13 +23,13 @@ func NewReaderStyle(writer iogo.Writer, reader iogo.Reader) iogo.ReaderStyle {
 }
 
 func (style readerStyle) Prompt(prompt string, options iogo.Options) (string, error) {
-	style.writer.WriteLine(prompt)
-	return style.reader.ReadLine(options)
+	style.writer.Writeln(prompt)
+	return style.reader.Readln(options)
 }
 
 func (style readerStyle) RequirePrompt(prompt string, options iogo.Options) (string, error) {
-	style.writer.WriteLine(prompt)
-	return style.reader.ReadLine(options)
+	style.writer.Writeln(prompt)
+	return style.reader.Readln(options)
 }
 
 func (style readerStyle) Confirm(prompt string, options iogo.Options) (bool, error) {
@@ -46,8 +46,8 @@ func (style readerStyle) Confirm(prompt string, options iogo.Options) (bool, err
 		no = "N"
 	}
 
-	style.writer.WriteLine(prompt + fmt.Sprintf(" (%s/%s)", yes, no))
-	result, err := style.reader.ReadLine(options)
+	style.writer.Writeln(prompt + fmt.Sprintf(" (%s/%s)", yes, no))
+	result, err := style.reader.Readln(options)
 
 	if &result == nil || result == "" {
 		return defaultYes, err
@@ -63,11 +63,11 @@ func (style readerStyle) Select(prompt string, valid []string, options iogo.Opti
 	}
 	selectRegexp := regexp.MustCompile("^" + strings.Join(safeValid, "|") + "$")
 
-	style.writer.WriteLine(prompt)
-	style.writer.WriteLine("Valid options: " + strings.Join(valid, ", "))
+	style.writer.Writeln(prompt)
+	style.writer.Writeln("Valid options: " + strings.Join(valid, ", "))
 
 	for {
-		result, err := style.reader.ReadLine(options)
+		result, err := style.reader.Readln(options)
 		if err != nil {
 			continue
 		}
@@ -75,9 +75,9 @@ func (style readerStyle) Select(prompt string, valid []string, options iogo.Opti
 		if selectRegexp.MatchString(result) {
 			return result, err
 		} else {
-			style.writer.WriteLine("Your input did not match the valid selection.")
-			style.writer.WriteLine(prompt)
-			style.writer.WriteLine("Valid options: " + strings.Join(valid, ", "))
+			style.writer.Writeln("Your input did not match the valid selection.")
+			style.writer.Writeln(prompt)
+			style.writer.Writeln("Valid options: " + strings.Join(valid, ", "))
 		}
 	}
 }

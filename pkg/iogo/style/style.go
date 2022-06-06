@@ -2,8 +2,8 @@ package style
 
 import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	readr "github.com/zarthus/iogo/v2/pkg/iogo/reader/style"
-	write "github.com/zarthus/iogo/v2/pkg/iogo/writer/style"
+	reader "github.com/zarthus/iogo/v2/pkg/iogo/reader/style"
+	writer "github.com/zarthus/iogo/v2/pkg/iogo/writer/style"
 )
 
 type defaultStyle struct {
@@ -11,10 +11,10 @@ type defaultStyle struct {
 	output iogo.WriterStyle
 }
 
-func createDefaultStyle(writer iogo.Writer, reader iogo.Reader) iogo.Style {
+func createDefaultStyle(w iogo.Writer, r iogo.Reader) iogo.Style {
 	return defaultStyle{
-		input:  readr.NewReaderStyle(writer, reader),
-		output: write.NewWriterStyle(writer, reader),
+		input:  reader.NewReaderStyle(w, r),
+		output: writer.NewWriterStyle(w, r),
 	}
 }
 
