@@ -2,6 +2,6 @@ package style
 
 import "testing"
 
-func TestCreateDefaultIo(t *testing.T) {
+func TestCreateDefaultReadWriter(t *testing.T) {
 	CreateDefaultReadWriter()
 }

@@ -30,10 +30,10 @@ Refer to `main.go` for a detailed example.
 ### Very basic usage
 
 ```go
-rw := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
-rw.Writer().WriteLine("What's your name?")
-name, err := rw.Reader().ReadLine()
+rw.Writer().Writeln("What's your name?")
+name, err := rw.Reader().Readln()
 if err != nil {
     panic(err)
 }
@@ -43,7 +43,7 @@ rw.Writer().WriteLine("Nice to meet you, " + name)
 ### Input handling
 
 ```go
-rw := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
 confirmed, err := rw.Style().Input().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
 if err != nil {
@@ -58,7 +58,7 @@ if confirmed {
 ### Output handling
 
 ```go
-rw := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
 rw.Style().Output().Title("Welcome to iogo!")
 rw.Style().Output().Success("You have installed the software correctly!")
