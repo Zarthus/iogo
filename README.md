@@ -3,10 +3,10 @@
 `iogo` is a helper go library for handling input and output, and stylizing them.
 
 At it's core, iogo is a reader and a writer that doesn't do a whole more than
-`fmt.Print` and `fmt.Scanf`, and if that's all that you need, you probably don't
-need this library - or you're just dealing with very little input.
+`fmt.Print` and `fmt.Scanf` with pretty styling options, and if you don't need that, 
+you probably don't need this library.
 
-Where iogo helps you, however, is offering an extensive toolkit for history management, 
+Where iogo helps you, is by offering an extensive toolkit for history management, 
 terminal colours, handling input, and providing styling for output.
 
 Currently, it is not entirely feature complete (support for table outputting, 
@@ -32,12 +32,12 @@ Refer to `main.go` for a detailed example.
 ```go
 io := style.CreateDefaultIo()
 
-io.GetWriter().WriteLine("What's your name?")
-name, err := io.GetReader().ReadLine()
+io.Writer().WriteLine("What's your name?")
+name, err := io.Reader().ReadLine()
 if err != nil {
     panic(err)
 }
-io.GetWriter().WriteLine("Nice to meet you, " + name)
+io.Writer().WriteLine("Nice to meet you, " + name)
 ```
 
 ### Input handling
