@@ -14,7 +14,7 @@ func (writer *nullWriter) Write(message string) {
 	writer.writes = append(writer.writes, message)
 }
 
-func (writer *nullWriter) WriteLine(message string) {
+func (writer *nullWriter) Writeln(message string) {
 	writer.writes = append(writer.writes, message)
 }
 

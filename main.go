@@ -51,14 +51,14 @@ func demo(f flags) int {
 		return 0
 	}
 	if f.selectFlag && f.confirmFlag {
-		rw.Writer().WriteLine("Options --confirm and --select cannot be used in conjunction")
+		rw.Writer().Writeln("Options --confirm and --select cannot be used in conjunction")
 		return 1
 	}
 
 	inp, err := readInput(rw, f)
 
 	if err != nil {
-		rw.Writer().WriteLine("error! " + err.Error())
+		rw.Writer().Writeln("error! " + err.Error())
 		panic(err)
 	}
 

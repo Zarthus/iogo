@@ -22,91 +22,91 @@ type writerStyle struct {
 
 const blockPadding = 2
 
-func NewWriterStyle(writer iogo.Writer, reader iogo.Reader) iogo.WriterStyle {
+func NewWriterStyle(w iogo.Writer, r iogo.Reader) iogo.WriterStyle {
 	return &writerStyle{
 		termcol: "xterm", // TODO: Detect terminal, use 256 colour radius if possible
 		unicode: false,   // TODO: Detect terminal unicode support
 		width:   80,      // TODO: Detect terminal window width
 		colours: true,    // TODO: Detect colour support based on `termcol`, allow switching colours off
-		reader:  reader,
-		writer:  writer,
+		reader:  r,
+		writer:  w,
 	}
 }
 
-func (style writerStyle) Title(message string) {
-	style.writer.WriteLine("")
-	style.Section(message)
-	style.writer.WriteLine("")
+func (style writerStyle) Title(msg string) {
+	style.writer.Writeln("")
+	style.Section(msg)
+	style.writer.Writeln("")
 }
 
-func (style writerStyle) Section(message string) {
-	line := strings.Repeat("=", len(message))
+func (style writerStyle) Section(msg string) {
+	line := strings.Repeat("=", len(msg))
 
-	style.writer.WriteLine(message + "\n" + line)
+	style.writer.Writeln(msg + "\n" + line)
 }
 
-func (style writerStyle) Block(message string, options iogo.Options) {
+func (style writerStyle) Block(msg string, options iogo.Options) {
 	blocklen := math.Min(80, float64(style.width-(blockPadding*2)))
 	space := strings.Repeat(" ", int(blocklen))
 	padding := strings.Repeat(" ", blockPadding)
-	msglen := len(message)
+	msglen := len(msg)
 	needsWrapping := msglen > int(style.width)
 
 	var prefix string
 	var suffix string
 
-	if &options.BgColor != nil {
-		prefix = term.BackgroundColourize(options.BgColor, true)
+	if &options.BgColour != nil {
+		prefix = term.BackgroundColourize(options.BgColour, true)
 		suffix = string(term.Reset)
 	} else {
 		prefix = ""
 		suffix = ""
 	}
 
-	style.writer.WriteLine("")
-	style.writer.WriteLine(prefix + padding + space + padding + suffix)
+	style.writer.Writeln("")
+	style.writer.Writeln(prefix + padding + space + padding + suffix)
 	if !needsWrapping {
-		msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(message)))
-		style.writer.WriteLine(prefix + padding + message + msgpadding + suffix)
+		msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(msg)))
+		style.writer.Writeln(prefix + padding + msg + msgpadding + suffix)
 	} else {
-		for _, msg := range stringtools.Wrap(message, style.width-blockPadding*2) {
-			msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(msg)))
-			style.writer.WriteLine(prefix + padding + msg + msgpadding + suffix)
+		for _, m := range stringtools.Wrap(msg, style.width-blockPadding*2) {
+			msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(m)))
+			style.writer.Writeln(prefix + padding + m + msgpadding + suffix)
 		}
 	}
-	style.writer.WriteLine(prefix + padding + space + padding + suffix)
-	style.writer.WriteLine("")
+	style.writer.Writeln(prefix + padding + space + padding + suffix)
+	style.writer.Writeln("")
 }
 
-func (style writerStyle) Info(message string) {
+func (style writerStyle) Info(msg string) {
 	if style.colours {
-		style.Block(message, iogo.Options{BgColor: term.Cyan})
+		style.Block(msg, iogo.Options{BgColour: term.Cyan})
 	} else {
-		style.Block("INFO: "+message, iogo.Options{})
+		style.Block("INFO: "+msg, iogo.Options{})
 	}
 }
 
-func (style writerStyle) Success(message string) {
+func (style writerStyle) Success(msg string) {
 	if style.colours {
-		style.Block(message, iogo.Options{BgColor: term.Green})
+		style.Block(msg, iogo.Options{BgColour: term.Green})
 	} else {
-		style.Block("SUCCESS: "+message, iogo.Options{})
+		style.Block("SUCCESS: "+msg, iogo.Options{})
 	}
 }
 
-func (style writerStyle) Warning(message string) {
+func (style writerStyle) Warning(msg string) {
 	if style.colours {
-		style.Block(message, iogo.Options{BgColor: term.Yellow})
+		style.Block(msg, iogo.Options{BgColour: term.Yellow})
 	} else {
-		style.Block("WARNING: "+message, iogo.Options{})
+		style.Block("WARNING: "+msg, iogo.Options{})
 	}
 }
 
-func (style writerStyle) Error(message string) {
+func (style writerStyle) Error(msg string) {
 	if style.colours {
-		style.Block(message, iogo.Options{BgColor: term.Red})
+		style.Block(msg, iogo.Options{BgColour: term.Red})
 	} else {
-		style.Block("ERROR: "+message, iogo.Options{})
+		style.Block("ERROR: "+msg, iogo.Options{})
 	}
 }
 

@@ -13,11 +13,11 @@ type defaultIo struct {
 }
 
 func CreateDefaultReadWriter() iogo.Iogo {
-	writ, read := writer.NewDefaultWriter(), reader.NewInMemoryReader()
+	w, r := writer.NewDefaultWriter(), reader.NewInMemoryReader()
 	return defaultIo{
-		writer: writ,
-		reader: read,
-		style:  createDefaultStyle(writ, read),
+		writer: w,
+		reader: r,
+		style:  createDefaultStyle(w, r),
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 )
 
 // Maintains an active list of history based in memory
-// The moment the software closes, the history is gone.
+// The moment the software closes, the history is gone
 type inMemoryReader struct {
 	history iogo.HistoryTracker
 }
@@ -18,32 +18,30 @@ func NewInMemoryReader() *inMemoryReader {
 	}
 }
 
-func (reader inMemoryReader) ReadLine(options iogo.Options) (string, error) {
-	input, err := raw.Read(reader.history)
+func (r inMemoryReader) Readln(options iogo.Options) (string, error) {
+	input, err := raw.Read(r.history)
 
 	if err != nil {
-		return reader.fallback(&input, options), err
+		return r.fallback(input, &options), err
 	}
 
-	reader.trackHistory(&input, options)
-	return reader.fallback(&input, options), err
+	r.trackHistory(input, &options)
+	return r.fallback(input, &options), err
 }
 
-func (reader inMemoryReader) Reset() {
-	reader.history.Reset()
+func (r inMemoryReader) Reset() {
+	r.history.Reset()
 }
 
-func (reader inMemoryReader) fallback(input *string, options iogo.Options) string {
-	if input != nil {
-		return *input
+func (r inMemoryReader) fallback(input string, opts *iogo.Options) string {
+	if input != "" {
+		return opts.Default
 	}
-	return options.Default
+	return input
 }
 
-func (reader inMemoryReader) trackHistory(input *string, options iogo.Options) {
-	if options.DoNotTrack || input == nil || *input == "" {
-		return
+func (r inMemoryReader) trackHistory(input string, opts *iogo.Options) {
+	if !opts.DoNotTrack && input != "" {
+		r.history.Track(input)
 	}
-
-	reader.history.Track(*input)
 }

@@ -11,10 +11,10 @@ func NewDefaultWriter() *defaultWriter {
 	return &defaultWriter{}
 }
 
-func (writer defaultWriter) Write(message string) {
-	fmt.Print(message)
+func (writer defaultWriter) Write(msg string) {
+	fmt.Print(msg)
 }
 
-func (writer defaultWriter) WriteLine(message string) {
-	fmt.Println(message)
+func (writer defaultWriter) Writeln(msg string) {
+	fmt.Println(msg)
 }

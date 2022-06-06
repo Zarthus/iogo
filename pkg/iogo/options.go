@@ -22,6 +22,6 @@ type Options struct {
 	DoNotTrack bool
 
 	// Some output can be styled with text colour
-	FgColor term.Colour
-	BgColor term.Colour
+	FgColour term.Colour
+	BgColour term.Colour
 }
