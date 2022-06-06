@@ -30,22 +30,22 @@ Refer to `main.go` for a detailed example.
 ### Very basic usage
 
 ```go
-io := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
-io.GetWriter().WriteLine("What's your name?")
-name, err := io.GetReader().ReadLine()
+rw.GetWriter().Writeln("What's your name?")
+name, err := rw.GetReader().ReadLine()
 if err != nil {
     panic(err)
 }
-io.GetWriter().WriteLine("Nice to meet you, " + name)
+rw.GetWriter().Writeln("Nice to meet you, " + name)
 ```
 
 ### Input handling
 
 ```go
-io := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
-confirmed, err := io.Style().Input().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
+confirmed, err := rw.Style().Input().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
 if err != nil {
     panic(err)
 }
@@ -58,10 +58,10 @@ if confirmed {
 ### Output handling
 
 ```go
-io := style.CreateDefaultIo()
+rw := style.CreateDefaultReadWriter()
 
-io.Style().Output().Title("Welcome to iogo!")
-io.Style().Output().Success("You have installed the software correctly!")
+rw.Style().Output().Title("Welcome to iogo!")
+rw.Style().Output().Success("You have installed the software correctly!")
 ```
 
 ## License

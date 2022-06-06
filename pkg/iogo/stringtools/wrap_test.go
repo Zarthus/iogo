@@ -9,7 +9,7 @@ func TestWrap(t *testing.T) {
 	cases := []struct {
 		Input     string
 		Output    string
-		Maxlength uint
+		MaxLength int
 	}{
 		{
 			"foo",
@@ -21,10 +21,15 @@ func TestWrap(t *testing.T) {
 			"foob\narba\nz",
 			4,
 		},
+		{
+			"foobarba",
+			"foob\narba",
+			4,
+		},
 	}
 
 	for i, tc := range cases {
-		actual := strings.Join(Wrap(tc.Input, tc.Maxlength), "\n")
+		actual := strings.Join(Wrap(tc.Input, tc.MaxLength), "\n")
 
 		if actual != tc.Output {
 			t.Fatalf(

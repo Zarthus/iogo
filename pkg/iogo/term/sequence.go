@@ -19,7 +19,7 @@ const (
 	Control        EscapeSequence = 0x21
 )
 
-// note: terminals vary wildely, not all terminals may interpret the same control sequence as to mean the same thing.
+// note: terminals vary wildly, not all terminals may interpret the same control sequence as to mean the same thing.
 const (
 	Reset         ControlSequence = "\033[0m"
 	Bold          ControlSequence = "\033[1m"
@@ -45,7 +45,6 @@ func Colourize(c Colour, bright bool) string {
 
 func BackgroundColourize(c Colour, bright bool) string {
 	c += 10
-
 	if bright {
 		return fmt.Sprintf(string(bgColourLight), 60+c)
 	} else {

@@ -1,29 +1,16 @@
 package stringtools
 
-func Wrap(s string, maxlength uint) []string {
-	staticSlen := uint(len(s))
-	slen := staticSlen
-	if maxlength > slen {
-		return []string{s}
+func Wrap(s string, maxLength int) []string {
+	if maxLength < 0 {
+		panic("maxLength must be nonnegative")
 	}
-
 	var lines []string
-	pointer := uint(0)
-
-	for slen > maxlength {
-		if pointer > staticSlen {
-			break
+	for i := 0; i < len(s); i += maxLength {
+		j := i + maxLength
+		if j > len(s) {
+			j = len(s)
 		}
-
-		pterEnd := pointer + maxlength
-		if pterEnd > staticSlen {
-			pterEnd = staticSlen
-		}
-		lines = append(lines, s[pointer:pterEnd])
-
-		pointer += maxlength
-		slen = maxlength - slen
+		lines = append(lines, s[i:j])
 	}
-
 	return lines
 }

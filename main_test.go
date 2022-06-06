@@ -6,16 +6,33 @@ import (
 )
 
 func TestFunc(t *testing.T) {
-	oldStdout := os.Stdout
-	defer func() {
-		os.Stdout = oldStdout
-	}()
+	oldStdin, oldStdout := os.Stdin, os.Stdout
+	stdin, stdout, err := os.Pipe()
+	if err != nil {
+		panic(err)
+	}
+	os.Stdin, os.Stdout = stdin, nil
+	resetStdInOut := func() {
+		os.Stdin, os.Stdout = oldStdin, oldStdout
+	}
 
-	os.Stdout = nil
-	if 0 != demo([]string{"iogo", "--confirm"}) {
+	stdout.WriteString("hello\n")
+	if !demo(flags{}) {
+		resetStdInOut()
 		t.Fail()
 	}
-	if 0 != demo([]string{"iogo", "--help"}) {
+	stdout.WriteString("one\n")
+	if !demo(flags{selectFlag: true}) {
+		resetStdInOut()
 		t.Fail()
 	}
+	if demo(flags{selectFlag: true, confirmFlag: true}) {
+		resetStdInOut()
+		t.Fail()
+	}
+	if !demo(flags{selectFlag: true, confirmFlag: true, helpFlag: true}) {
+		resetStdInOut()
+		t.Fail()
+	}
+	resetStdInOut()
 }

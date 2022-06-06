@@ -6,29 +6,29 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo/writer"
 )
 
-type defaultIo struct {
+type defaultReadWriter struct {
 	writer iogo.Writer
 	reader iogo.Reader
 	style  iogo.Style
 }
 
-func CreateDefaultIo() iogo.Io {
-	writ, read := writer.NewDefaultWriter(), reader.NewInMemoryReader()
-	return defaultIo{
-		writer: writ,
-		reader: read,
-		style:  createDefaultStyle(writ, read),
+func CreateDefaultReadWriter() iogo.ReadWriter {
+	w, r := writer.NewDefaultWriter(), reader.NewInMemoryReader()
+	return defaultReadWriter{
+		writer: w,
+		reader: r,
+		style:  createDefaultStyle(w, r),
 	}
 }
 
-func (io defaultIo) Reader() iogo.Reader {
-	return io.reader
+func (rw defaultReadWriter) Reader() iogo.Reader {
+	return rw.reader
 }
 
-func (io defaultIo) Writer() iogo.Writer {
-	return io.writer
+func (rw defaultReadWriter) Writer() iogo.Writer {
+	return rw.writer
 }
 
-func (io defaultIo) Style() iogo.Style {
-	return io.style
+func (rw defaultReadWriter) Style() iogo.Style {
+	return rw.style
 }

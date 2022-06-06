@@ -1,93 +1,79 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
 	"os"
-	"syscall"
 )
 
+var confirmFlag = flag.Bool("confirm", false, "use a confirmation question")
+var selectFlag = flag.Bool("select", false, "use a multiple-choice selection")
+var helpFlag = flag.Bool("help", false, "show help text")
+
+type flags struct {
+	confirmFlag bool
+	selectFlag  bool
+	helpFlag    bool
+}
+
 func main() {
-	exitCode := demo(os.Args)
-
-	if exitCode != 0 {
-		syscall.Exit(exitCode)
+	flag.Parse()
+	f := flags{
+		confirmFlag: *confirmFlag,
+		selectFlag:  *selectFlag,
+		helpFlag:    *helpFlag,
+	}
+	if ok := demo(f); !ok {
+		os.Exit(1)
 	}
 }
 
-func demo(args []string) int {
-	io := style.CreateDefaultIo()
-	sel, conf, exitcode := parseOpts(io, args)
-	if exitcode >= 0 {
-		return exitcode
+func demo(f flags) bool {
+	rw := style.CreateDefaultReadWriter()
+	if f.helpFlag {
+		showHelp(rw)
+	} else if f.confirmFlag && f.selectFlag {
+		rw.Writer().Writeln("Options --confirm and --select cannot be used in conjunction")
+		return false
+	} else if in, err := readInput(rw, f); err != nil {
+		rw.Writer().Writeln("Error! " + err.Error())
+		return false
+	} else {
+		rw.Style().Output().Success("Output: " + in)
 	}
-
-	inp, err := readInput(io, sel, conf)
-
-	if err != nil {
-		io.Writer().WriteLine("error! " + err.Error())
-		panic(err)
-	}
-
-	io.Style().Output().Success("Output: " + inp)
-	return 0
+	return true
 }
 
-func parseOpts(io iogo.Io, args []string) (bool, bool, int) {
-	sel, conf := false, false
-	exitcode := -1
-
-	for _, arg := range args {
-		if arg == "--select" {
-			sel = true
-		}
-		if arg == "--confirm" {
-			conf = true
-		}
-		if arg == "--help" {
-			exitcode = 0
-			io.Writer().Write(
-				"iogo " + iogo.Version + "\n\n" +
-					"USAGE:\n" +
-					"  --help      this help text\n" +
-					"  --confirm   use a confirmation question\n" +
-					"  --select    use a multiple-choice selection\n\n",
-			)
-		}
-	}
-
-	if sel && conf {
-		io.Writer().WriteLine("options --confirm and --select cannot be used in conjunction")
-		return sel, conf, 1
-	}
-
-	return sel, conf, exitcode
-}
-
-func readInput(io iogo.Io, sel bool, conf bool) (string, error) {
-	var inp string
-	var err error
-
-	options := iogo.Options{
+func readInput(rw iogo.ReadWriter, f flags) (string, error) {
+	opts := &iogo.Options{
 		DoNotTrack: true,
 	}
-
-	io.Style().Output().Title("Welcome to iogo!")
-	inpstyle := io.Style().Input()
-	if !sel && !conf {
-		inp, err = inpstyle.Prompt("Please insert text:", options)
-	} else if sel {
-		inp, err = inpstyle.Select("Pick a number:", []string{"one", "two", "three"}, options)
-	} else if conf {
-		options.Default = "n"
-		conf, err = inpstyle.Confirm("Do you agree to the terms and conditions?", options)
-
-		if conf {
-			inp = "You confirmed!"
+	rw.Style().Output().Title("Welcome to iogo!")
+	inStyle := rw.Style().Input()
+	if f.confirmFlag {
+		opts.Default = "n"
+		if ok, err := inStyle.Confirm("Do you agree to the terms and conditions?", opts); err != nil {
+			return "", err
+		} else if ok {
+			return "You confirmed!", nil
 		} else {
-			inp = "You did not confirm."
+			return "You did not confirm.", nil
 		}
+	} else if f.selectFlag {
+		return inStyle.Select("Pick a number:", []string{"one", "two", "three"}, opts)
+	} else {
+		return inStyle.Prompt("Please insert text:", opts)
 	}
+}
 
-	return inp, err
+func showHelp(rw iogo.ReadWriter) {
+	rw.Writer().Writeln(fmt.Sprintf(`iogo %s
+
+USAGE:
+  --help      this help text
+  --confirm   use a confirmation question
+  --select    use a multiple-choice selection
+`, iogo.Version))
 }

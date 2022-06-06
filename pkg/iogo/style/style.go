@@ -18,10 +18,10 @@ func createDefaultStyle(writer iogo.Writer, reader iogo.Reader) iogo.Style {
 	}
 }
 
-func (style defaultStyle) Input() iogo.ReaderStyle {
-	return style.input
+func (s defaultStyle) Input() iogo.ReaderStyle {
+	return s.input
 }
 
-func (style defaultStyle) Output() iogo.WriterStyle {
-	return style.output
+func (s defaultStyle) Output() iogo.WriterStyle {
+	return s.output
 }

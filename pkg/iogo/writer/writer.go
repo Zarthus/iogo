@@ -4,17 +4,16 @@ import (
 	"fmt"
 )
 
-type defaultWriter struct {
+type DefaultWriter struct{}
+
+func NewDefaultWriter() *DefaultWriter {
+	return &DefaultWriter{}
 }
 
-func NewDefaultWriter() *defaultWriter {
-	return &defaultWriter{}
+func (w DefaultWriter) Write(msg string) {
+	fmt.Print(msg)
 }
 
-func (writer defaultWriter) Write(message string) {
-	fmt.Print(message)
-}
-
-func (writer defaultWriter) WriteLine(message string) {
-	fmt.Println(message)
+func (w DefaultWriter) Writeln(msg string) {
+	fmt.Println(msg)
 }

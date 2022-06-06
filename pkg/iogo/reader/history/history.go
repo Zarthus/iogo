@@ -5,7 +5,7 @@ type tracker struct {
 }
 
 func NewHistoryTracker(history []string) *tracker {
-	return &tracker{history: history}
+	return &tracker{history}
 }
 
 func (t tracker) Get() []string {

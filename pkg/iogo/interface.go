@@ -1,31 +1,31 @@
 package iogo
 
 type Reader interface {
-	ReadLine(options Options) (string, error)
+	ReadLine(opts *Options) (string, error)
 	Reset()
 }
 
 type Writer interface {
-	Write(message string)
-	WriteLine(message string)
+	Write(msg string)
+	Writeln(msg string)
 }
 
 type ReaderStyle interface {
-	Prompt(prompt string, options Options) (string, error)
-	Confirm(prompt string, options Options) (bool, error)
-	Select(prompt string, valid []string, options Options) (string, error)
+	Prompt(prompt string, opts *Options) (string, error)
+	Confirm(prompt string, opts *Options) (bool, error)
+	Select(prompt string, valid []string, opts *Options) (string, error)
 }
 
 type WriterStyle interface {
-	Title(message string)
-	Section(message string)
+	Title(msg string)
+	Section(msg string)
 
-	Block(message string, options Options)
+	Block(msg string, opts *Options)
 
-	Info(message string)
-	Success(message string)
-	Warning(message string)
-	Error(message string)
+	Info(msg string)
+	Success(msg string)
+	Warning(msg string)
+	Error(msg string)
 }
 
 type Style interface {
@@ -33,7 +33,7 @@ type Style interface {
 	Output() WriterStyle
 }
 
-type Io interface {
+type ReadWriter interface {
 	Reader() Reader
 	Writer() Writer
 	Style() Style
