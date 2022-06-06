@@ -3,6 +3,8 @@ package formatter
 import (
 	"fmt"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
+	"math"
+	"strconv"
 	"strings"
 )
 
@@ -20,19 +22,21 @@ func (formatter simpleProgressBarFormatter) Format(bar iogo.ProgressBar) string 
 	cur, max := bar.Current(), bar.Maximum()
 	percentage := float32(cur) / float32(max) * 100
 	bars := int(percentage / 10)
+	// determines how many 'zeroes' are in the max number, so we can pad the starting number to always
+	// be identical. This may 'glitch' formatting when bar.SetMaximum() is called, but oh well.
+	printfLeading := strconv.Itoa(1 + int(math.Log10(float64(max))))
 
 	desc := ""
 	if formatter.descriptor != nil {
-		desc = " " + *formatter.descriptor
+		desc = *formatter.descriptor
 	}
 
 	return fmt.Sprintf(
-		"[%s%s]%s %d/%d (%.2f%%)",
+		"[%-10s] %"+printfLeading+"d/%d (%5.1f%%) %s",
 		strings.Repeat("#", bars),
-		strings.Repeat(" ", 10-bars),
-		desc,
 		bar.Current(),
 		bar.Maximum(),
 		percentage,
+		desc,
 	)
 }
