@@ -21,6 +21,7 @@ func TestFunc(t *testing.T) {
 		resetStdInOut()
 		t.Fail()
 	}
+
 	stdout.WriteString("one\n")
 	if 0 != demo(flags{selectFlag: true}) {
 		resetStdInOut()
