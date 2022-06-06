@@ -3,8 +3,10 @@ package main
 import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
+	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
 	"os"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -17,12 +19,12 @@ func main() {
 
 func demo(args []string) int {
 	io := style.CreateDefaultIo()
-	sel, conf, exitcode := parseOpts(io, args)
+	sel, conf, prog, exitcode := parseOpts(io, args)
 	if exitcode >= 0 {
 		return exitcode
 	}
 
-	inp, err := readInput(io, sel, conf)
+	inp, err := readInput(io, sel, conf, prog)
 
 	if err != nil {
 		io.Writer().WriteLine("error! " + err.Error())
@@ -33,8 +35,8 @@ func demo(args []string) int {
 	return 0
 }
 
-func parseOpts(io iogo.Io, args []string) (bool, bool, int) {
-	sel, conf := false, false
+func parseOpts(io iogo.Io, args []string) (bool, bool, bool, int) {
+	sel, conf, prog := false, false, false
 	exitcode := -1
 
 	for _, arg := range args {
@@ -44,6 +46,9 @@ func parseOpts(io iogo.Io, args []string) (bool, bool, int) {
 		if arg == "--confirm" {
 			conf = true
 		}
+		if arg == "--progress" {
+			prog = true
+		}
 		if arg == "--help" {
 			exitcode = 0
 			io.Writer().Write(
@@ -51,20 +56,21 @@ func parseOpts(io iogo.Io, args []string) (bool, bool, int) {
 					"USAGE:\n" +
 					"  --help      this help text\n" +
 					"  --confirm   use a confirmation question\n" +
-					"  --select    use a multiple-choice selection\n\n",
+					"  --select    use a multiple-choice selection\n" +
+					"  --progress  show a progress bar\n\n",
 			)
 		}
 	}
 
 	if sel && conf {
 		io.Writer().WriteLine("options --confirm and --select cannot be used in conjunction")
-		return sel, conf, 1
+		return sel, conf, prog, 1
 	}
 
-	return sel, conf, exitcode
+	return sel, conf, prog, exitcode
 }
 
-func readInput(io iogo.Io, sel bool, conf bool) (string, error) {
+func readInput(io iogo.Io, sel bool, conf bool, prog bool) (string, error) {
 	var inp string
 	var err error
 
@@ -87,6 +93,14 @@ func readInput(io iogo.Io, sel bool, conf bool) (string, error) {
 		} else {
 			inp = "You did not confirm."
 		}
+	}
+
+	if prog {
+		bar := progress.NewDefaultProgressBar(10)
+		io.Style().Output().Progress(bar, func(progressBar iogo.ProgressBar) {
+			progressBar.Advance(1)
+			time.Sleep(100 * time.Millisecond)
+		}, nil)
 	}
 
 	return inp, err

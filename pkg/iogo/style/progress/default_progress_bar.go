@@ -1,24 +1,17 @@
 package progress
 
-import "fmt"
-
 type defaultProgressBar struct {
 	current uint
 	maximum uint
 	locked  bool
 }
 
-func newDefaultProgressBar(maximum uint) *defaultProgressBar {
+func NewDefaultProgressBar(maximum uint) *defaultProgressBar {
 	return &defaultProgressBar{
 		current: 0,
 		maximum: maximum,
 		locked:  false,
 	}
-}
-
-func (bar defaultProgressBar) Render() string {
-	// TODO: progress.Render
-	return fmt.Sprintf("%d/%d", bar.Current(), bar.Maximum())
 }
 
 func (bar *defaultProgressBar) Advance(num uint) {

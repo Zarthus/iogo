@@ -3,6 +3,8 @@ package style
 import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/stringtools"
+	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
+	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"github.com/zarthus/iogo/v2/pkg/iogo/term"
 	"math"
 	"strings"
@@ -25,7 +27,7 @@ func NewWriterStyle(writer iogo.Writer, reader iogo.Reader) iogo.WriterStyle {
 		termcol: "xterm", // TODO: Detect terminal, use 256 colour radius if possible
 		unicode: false,   // TODO: Detect terminal unicode support
 		width:   80,      // TODO: Detect terminal window width
-		colours: true,    // TODO: Detect colour supprot based on `termcol`, allow switching colours off
+		colours: true,    // TODO: Detect colour support based on `termcol`, allow switching colours off
 		reader:  reader,
 		writer:  writer,
 	}
@@ -106,4 +108,23 @@ func (style writerStyle) Error(message string) {
 	} else {
 		style.Block("ERROR: "+message, iogo.Options{})
 	}
+}
+
+func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBar iogo.ProgressBar), barFormatter *iogo.ProgressBarFormatter) {
+	var bf iogo.ProgressBarFormatter
+	if barFormatter == nil {
+		bf = style.autodetectProgressFormatter()
+	} else {
+		bf = *barFormatter
+	}
+
+	for !bar.IsFinished() {
+		progress.Render(style.writer, bar, bf)
+		runnable(bar)
+	}
+	progress.Render(style.writer, bar, bf)
+}
+
+func (style writerStyle) autodetectProgressFormatter() iogo.ProgressBarFormatter {
+	return formatter.NewSimpleProgressBarFormatter(nil)
 }

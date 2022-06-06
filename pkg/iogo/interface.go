@@ -59,6 +59,11 @@ type WriterStyle interface {
 	Warning(message string)
 	// Error is an alias for Block with appropriate colour (if supported), or a sane fallback
 	Error(message string)
+
+	// Progress Renders starts the Progress bar, and loops the runnable until the bar is finished.
+	// It is expected that the inside of the runnable calls ProgressBar.Advance to ensure the bar finishes
+	// at some point. Therefore, caution: Your program can run into an infinite loop on misuse.
+	Progress(bar ProgressBar, runnable func(bar ProgressBar), barFormatter *ProgressBarFormatter)
 }
 
 // Style is a combination object that merges ReaderStyle and WriterStyle in one coherent structure, while also offering
@@ -66,9 +71,6 @@ type WriterStyle interface {
 type Style interface {
 	Input() ReaderStyle
 	Output() WriterStyle
-
-	// Progress Renders starts the Progress bar
-	Progress(bar ProgressBar)
 }
 
 // Io is the combination of input (Reader) and output (Writer) offering the bare essentials,
@@ -81,14 +83,8 @@ type Io interface {
 
 // ProgressBar helps render progress on some task
 type ProgressBar interface {
-	// Render the current progress bar to the display
-	// You are responsible yourself for ensuring a proper refresh interval
-	// If you don't call render frequently, your progress bar will appear stale.
-	Render() string
-
 	// Advance the progress bar by num, or up until Maximum is reached.
 	Advance(num uint)
-
 	// SetMaximum increases or decreases the maximum value the progress bar can take (even while it is running).
 	// Behaviour of SetMaximum may vary by implementation of the ProgressBar based on if the Current progression
 	// exceeds the new Maximum value
@@ -98,10 +94,17 @@ type ProgressBar interface {
 	Current() uint
 	// Maximum returns the maximum tasks before the ProgressBar is finished.
 	Maximum() uint
+
 	// Finish updates the Current value to the Maximum
 	Finish()
 	// IsFinished returns if the Current value matches the Maximum value
 	IsFinished() bool
+}
+
+// ProgressBarFormatter formats the progress bar into some style
+type ProgressBarFormatter interface {
+	// Format a progress bar into a readable string
+	Format(bar ProgressBar) string
 }
 
 // HistoryTracker keeps track of Reader input to later be reused for e.g. autocompletion
