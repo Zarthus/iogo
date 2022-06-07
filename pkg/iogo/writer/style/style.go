@@ -46,7 +46,7 @@ func (style writerStyle) Section(msg string) {
 }
 
 func (style writerStyle) Block(msg string, options iogo.Options) {
-	blocklen := math.Min(80, float64(style.width-(blockPadding*2)))
+	blocklen := math.Min(float64(style.width), float64(style.width-(blockPadding*2)))
 	space := strings.Repeat(" ", int(blocklen))
 	padding := strings.Repeat(" ", blockPadding)
 	msglen := len(msg)
