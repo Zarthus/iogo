@@ -39,7 +39,7 @@ func TestFunc(t *testing.T) {
 		t.Fail()
 	}
 
-	if demo(flags{selectFlag: true, confirmFlag: true}) != 0 {
+	if demo(flags{selectFlag: true, confirmFlag: true}) != 1 {
 		resetStdInOut()
 		t.Fail()
 	}
