@@ -17,29 +17,29 @@ func TestFunc(t *testing.T) {
 	}
 
 	stdout.WriteString("hello\n")
-	if 0 != demo(flags{}) {
+	if demo(flags{}) != 0 {
 		resetStdInOut()
 		t.Fail()
 	}
 
 	stdout.WriteString("one\n")
-	if 0 != demo(flags{selectFlag: true}) {
+	if demo(flags{selectFlag: true}) != 0 {
 		resetStdInOut()
 		t.Fail()
 	}
 
 	stdout.WriteString("inp\n")
-	if 0 != demo(flags{progressFlag: true}) {
+	if demo(flags{progressFlag: true}) != 0 {
 		resetStdInOut()
 		t.Fail()
 	}
 
-	if 0 != demo(flags{selectFlag: true, confirmFlag: true, helpFlag: true}) {
+	if demo(flags{selectFlag: true, confirmFlag: true, helpFlag: true}) != 0 {
 		resetStdInOut()
 		t.Fail()
 	}
 
-	if 1 != demo(flags{selectFlag: true, confirmFlag: true}) {
+	if demo(flags{selectFlag: true, confirmFlag: true}) != 0 {
 		resetStdInOut()
 		t.Fail()
 	}
