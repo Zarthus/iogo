@@ -6,15 +6,13 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"github.com/zarthus/iogo/v2/pkg/iogo/term"
+	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
 	"math"
 	"strings"
 )
 
 type writerStyle struct {
-	termcol string
-	unicode bool
-	width   uint
-	colours bool
+	info term.TerminalInfo
 
 	reader iogo.Reader
 	writer iogo.Writer
@@ -24,12 +22,9 @@ const blockPadding = 2
 
 func NewWriterStyle(w iogo.Writer, r iogo.Reader) iogo.WriterStyle {
 	return &writerStyle{
-		termcol: "xterm", // TODO: Detect terminal, use 256 colour radius if possible
-		unicode: false,   // TODO: Detect terminal unicode support
-		width:   80,      // TODO: Detect terminal window width
-		colours: true,    // TODO: Detect colour support based on `termcol`, allow switching colours off
-		reader:  r,
-		writer:  w,
+		info:   term.Detect(),
+		reader: r,
+		writer: w,
 	}
 }
 
@@ -46,11 +41,12 @@ func (style writerStyle) Section(msg string) {
 }
 
 func (style writerStyle) Block(msg string, options iogo.Options) {
-	blocklen := math.Min(float64(style.width), float64(style.width-(blockPadding*2)))
+	cols := style.info.Size.Columns
+	blocklen := math.Min(float64(cols), float64(cols-(blockPadding*2)))
 	space := strings.Repeat(" ", int(blocklen))
 	padding := strings.Repeat(" ", blockPadding)
 	msglen := len(msg)
-	needsWrapping := msglen > int(style.width)
+	needsWrapping := msglen > int(cols)
 
 	var prefix string
 	var suffix string
@@ -66,11 +62,11 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 	style.writer.Writeln("")
 	style.writer.Writeln(prefix + padding + space + padding + suffix)
 	if !needsWrapping {
-		msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(msg)))
+		msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(msg)))
 		style.writer.Writeln(prefix + padding + msg + msgpadding + suffix)
 	} else {
-		for _, m := range stringtools.Wrap(msg, style.width-blockPadding*2) {
-			msgpadding := strings.Repeat(" ", int(style.width)-((blockPadding)+len(m)))
+		for _, m := range stringtools.Wrap(msg, cols-blockPadding*2) {
+			msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(m)))
 			style.writer.Writeln(prefix + padding + m + msgpadding + suffix)
 		}
 	}
@@ -79,8 +75,8 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 }
 
 func (style writerStyle) Info(msg string) {
-	if style.colours {
-		col := term.Cyan
+	if style.info.Colours != term.NoColourSupport {
+		col := col.Cyan
 		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("INFO: "+msg, iogo.Options{})
@@ -88,8 +84,8 @@ func (style writerStyle) Info(msg string) {
 }
 
 func (style writerStyle) Success(msg string) {
-	if style.colours {
-		col := term.Green
+	if style.info.Colours != term.NoColourSupport {
+		col := col.Green
 		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("SUCCESS: "+msg, iogo.Options{})
@@ -97,8 +93,8 @@ func (style writerStyle) Success(msg string) {
 }
 
 func (style writerStyle) Warning(msg string) {
-	if style.colours {
-		col := term.Yellow
+	if style.info.Colours != term.NoColourSupport {
+		col := col.Yellow
 		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("WARNING: "+msg, iogo.Options{})
@@ -106,8 +102,8 @@ func (style writerStyle) Warning(msg string) {
 }
 
 func (style writerStyle) Error(msg string) {
-	if style.colours {
-		col := term.Red
+	if style.info.Colours != term.NoColourSupport {
+		col := col.Red
 		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("ERROR: "+msg, iogo.Options{})

@@ -1,4 +1,4 @@
-package term
+package col
 
 type Colour uint
 

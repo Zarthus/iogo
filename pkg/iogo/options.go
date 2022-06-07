@@ -1,7 +1,7 @@
 package iogo
 
 import (
-	"github.com/zarthus/iogo/v2/pkg/iogo/term"
+	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
 )
 
 type KeyInputs rune
@@ -22,6 +22,6 @@ type Options struct {
 	DoNotTrack bool
 
 	// Some output can be styled with text colour
-	FgColour *term.Colour
-	BgColour *term.Colour
+	FgColour *col.Colour
+	BgColour *col.Colour
 }

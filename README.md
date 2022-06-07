@@ -1,5 +1,8 @@
 # iogo 
 
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/Zarthus/iogo.svg)](https://pkg.go.dev/github.com/Zarthus/iogo)
+
 `iogo` is a helper go library for handling input and output, and stylizing them.
 
 At it's core, iogo is a reader and a writer that doesn't do a whole more than
@@ -32,12 +35,12 @@ Refer to `main.go` for a detailed example.
 ```go
 rw := style.CreateDefaultReadWriter()
 
-rw.Writer().Writeln("What's your name?")
-name, err := rw.Reader().Readln()
-if err != nil {
+rw.Writer().Writeln("What's your name?") // Or use `name, err := rw.Style().Input().Prompt(...)`
+if name, err := rw.Reader().Readln(); err != nil {
     panic(err)
+} else {
+    rw.Writer().WriteLine("Nice to meet you, " + name)
 }
-rw.Writer().WriteLine("Nice to meet you, " + name)
 ```
 
 ### Input handling
@@ -63,6 +66,19 @@ rw := style.CreateDefaultReadWriter()
 rw.Style().Output().Title("Welcome to iogo!")
 rw.Style().Output().Success("You have installed the software correctly!")
 ```
+
+## Supported Terminal Emulator Versions
+
+The aim (though not the resources) is to support "modern" terminals.
+
+
+- Modern Microsoft published terminal emulators
+  - Specifically "Windows Terminal" on the store, not the old cmd.exe
+- Modern versions of popular terminal emulators on *nix, such as GNOME Terminal & Konsole
+- MacOS Terminal.app
+ 
+The assumption is made that the user is using a terminal emulator of a relatively new version
+  on a relatively modern version of their operating system.
 
 ## License
 
