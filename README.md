@@ -1,9 +1,9 @@
 # iogo 
 
-
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Zarthus/iogo.svg)](https://pkg.go.dev/github.com/Zarthus/iogo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2665dd12e31f968810b1/maintainability)](https://codeclimate.com/github/Zarthus/iogo/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/2665dd12e31f968810b1/test_coverage)](https://codeclimate.com/github/Zarthus/iogo/test_coverage)
+![Code Climate coverage](https://img.shields.io/codeclimate/coverage/zarthus/iogo)
+![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/zarthus/iogo)
 
 `iogo` is a helper go library for handling input and output, and stylizing them.
 
