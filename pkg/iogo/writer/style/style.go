@@ -75,39 +75,19 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 }
 
 func (style writerStyle) Info(msg string) {
-	if style.info.Colours != term.NoColourSupport {
-		col := col.Cyan
-		style.Block(msg, iogo.Options{BgColour: &col})
-	} else {
-		style.Block("INFO: "+msg, iogo.Options{})
-	}
+	style.doBlock(msg, col.Cyan, "INFO")
 }
 
 func (style writerStyle) Success(msg string) {
-	if style.info.Colours != term.NoColourSupport {
-		col := col.Green
-		style.Block(msg, iogo.Options{BgColour: &col})
-	} else {
-		style.Block("SUCCESS: "+msg, iogo.Options{})
-	}
+	style.doBlock(msg, col.Green, "SUCCESS")
 }
 
 func (style writerStyle) Warning(msg string) {
-	if style.info.Colours != term.NoColourSupport {
-		col := col.Yellow
-		style.Block(msg, iogo.Options{BgColour: &col})
-	} else {
-		style.Block("WARNING: "+msg, iogo.Options{})
-	}
+	style.doBlock(msg, col.Yellow, "WARNING")
 }
 
 func (style writerStyle) Error(msg string) {
-	if style.info.Colours != term.NoColourSupport {
-		col := col.Red
-		style.Block(msg, iogo.Options{BgColour: &col})
-	} else {
-		style.Block("ERROR: "+msg, iogo.Options{})
-	}
+	style.doBlock(msg, col.Red, "ERROR")
 }
 
 func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBar iogo.ProgressBar), barFormatter *iogo.ProgressBarFormatter) {
@@ -127,4 +107,12 @@ func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBa
 
 func (style writerStyle) autodetectProgressFormatter() iogo.ProgressBarFormatter {
 	return formatter.NewSimpleProgressBarFormatter(nil)
+}
+
+func (style writerStyle) doBlock(msg string, col col.Colour, oftype string) {
+	if style.info.Colours != term.NoColourSupport {
+		style.Block(msg, iogo.Options{BgColour: &col})
+	} else {
+		style.Block(oftype+": "+msg, iogo.Options{})
+	}
 }

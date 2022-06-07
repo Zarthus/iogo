@@ -2,6 +2,8 @@
 
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/Zarthus/iogo.svg)](https://pkg.go.dev/github.com/Zarthus/iogo)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2665dd12e31f968810b1/maintainability)](https://codeclimate.com/github/Zarthus/iogo/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2665dd12e31f968810b1/test_coverage)](https://codeclimate.com/github/Zarthus/iogo/test_coverage)
 
 `iogo` is a helper go library for handling input and output, and stylizing them.
 
