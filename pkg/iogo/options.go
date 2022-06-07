@@ -15,13 +15,13 @@ const (
 // this depends on the implementation of the Reader or Writer
 type Options struct {
 	// If no input is inserted, default to this value
-	Default string
+	Default *string
 
 	// Avoid appending input to the internal history list
 	// useful e.g. if you do not want to have passwords stored in memory for longer than necessary.
 	DoNotTrack bool
 
 	// Some output can be styled with text colour
-	FgColour term.Colour
-	BgColour term.Colour
+	FgColour *term.Colour
+	BgColour *term.Colour
 }

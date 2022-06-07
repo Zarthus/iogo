@@ -33,7 +33,7 @@ func (style readerStyle) RequirePrompt(prompt string, options iogo.Options) (str
 }
 
 func (style readerStyle) Confirm(prompt string, options iogo.Options) (bool, error) {
-	defaultYes := &options.Default == nil || options.Default == "" || style.confirmRegexp.MatchString(options.Default)
+	defaultYes := options.Default == nil || style.confirmRegexp.MatchString(*options.Default)
 
 	var yes string
 	var no string
@@ -49,7 +49,7 @@ func (style readerStyle) Confirm(prompt string, options iogo.Options) (bool, err
 	style.writer.Writeln(prompt + fmt.Sprintf(" (%s/%s)", yes, no))
 	result, err := style.reader.Readln(options)
 
-	if &result == nil || result == "" {
+	if result == "" {
 		return defaultYes, err
 	}
 

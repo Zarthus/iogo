@@ -85,7 +85,8 @@ func readInput(rw iogo.Iogo, f flags) (string, error) {
 	}
 
 	if f.confirmFlag {
-		opts.Default = "n"
+		n := "n"
+		opts.Default = &n
 
 		if confirmed, err := inStyle.Confirm("Do you agree to the terms and conditions?", opts); err != nil {
 			return "", err

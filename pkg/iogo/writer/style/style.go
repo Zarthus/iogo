@@ -55,8 +55,8 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 	var prefix string
 	var suffix string
 
-	if &options.BgColour != nil {
-		prefix = term.BackgroundColourize(options.BgColour, true)
+	if options.BgColour != nil {
+		prefix = term.BackgroundColourize(*options.BgColour, true)
 		suffix = string(term.Reset)
 	} else {
 		prefix = ""
@@ -80,7 +80,8 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 
 func (style writerStyle) Info(msg string) {
 	if style.colours {
-		style.Block(msg, iogo.Options{BgColour: term.Cyan})
+		col := term.Cyan
+		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("INFO: "+msg, iogo.Options{})
 	}
@@ -88,7 +89,8 @@ func (style writerStyle) Info(msg string) {
 
 func (style writerStyle) Success(msg string) {
 	if style.colours {
-		style.Block(msg, iogo.Options{BgColour: term.Green})
+		col := term.Green
+		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("SUCCESS: "+msg, iogo.Options{})
 	}
@@ -96,7 +98,8 @@ func (style writerStyle) Success(msg string) {
 
 func (style writerStyle) Warning(msg string) {
 	if style.colours {
-		style.Block(msg, iogo.Options{BgColour: term.Yellow})
+		col := term.Yellow
+		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("WARNING: "+msg, iogo.Options{})
 	}
@@ -104,7 +107,8 @@ func (style writerStyle) Warning(msg string) {
 
 func (style writerStyle) Error(msg string) {
 	if style.colours {
-		style.Block(msg, iogo.Options{BgColour: term.Red})
+		col := term.Red
+		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block("ERROR: "+msg, iogo.Options{})
 	}

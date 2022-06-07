@@ -36,7 +36,7 @@ func (r inMemoryReader) Reset() {
 
 func (r inMemoryReader) fallback(input string, opts *iogo.Options) string {
 	if input == "" {
-		return opts.Default
+		return *opts.Default
 	}
 	return input
 }
