@@ -22,14 +22,17 @@ const (
 )
 
 // note: terminals vary wildely, not all terminals may interpret the same control sequence as to mean the same thing.
-// Resources: https://tldp.org/HOWTO/Bash-Prompt-HOWTO/x361.html
+// Resources:
+// - https://tldp.org/HOWTO/Bash-Prompt-HOWTO/x361.html
+// - https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
 const (
 	Reset         ControlSequence = "\033[0m"
 	Bold          ControlSequence = "\033[1m"
 	Italics       ControlSequence = "\033[3m"
 	Underline     ControlSequence = "\033[4m"
 	Alert         ControlSequence = "\033[6m" // Some sort of blink in some terminals
-	Invert        ControlSequence = "\033[7m" // aka "Reversed"
+	Invert        ControlSequence = "\033[7m" // aka "Reversed", "Reverse Video", "Negative"
+	Concealed     ControlSequence = "\033[8m"
 	Strikethrough ControlSequence = "\033[9m"
 	colour        ControlSequence = "\033[%dm"
 	colourLight   ControlSequence = "\033[%dm"
@@ -37,8 +40,12 @@ const (
 	bgColourLight ControlSequence = "\033[%dm"
 	Redraw        ControlSequence = "\033c"
 
-	CursorSave    ControlSequence = "\033[s"
-	CursorRestore ControlSequence = "\033[u"
+	CursorSave     ControlSequence = "\033[s"
+	CursorRestore  ControlSequence = "\033[u"
+	cursorUp       ControlSequence = "\033[%dA\r"
+	cursorDown     ControlSequence = "\033[%dB\r"
+	cursorForward  ControlSequence = "\033[%dC\r"
+	cursorBackward ControlSequence = "\033[%dD\r"
 )
 
 func Colourize(c col.Colour, bright bool) string {

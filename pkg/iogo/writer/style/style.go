@@ -103,6 +103,7 @@ func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBa
 		runnable(bar)
 	}
 	progress.Render(style.writer, bar, bf)
+	style.writer.Write("\n")
 }
 
 func (style writerStyle) autodetectProgressFormatter() iogo.ProgressBarFormatter {
