@@ -4,6 +4,7 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/reader"
 	"github.com/zarthus/iogo/v2/pkg/iogo/writer"
+	"os"
 )
 
 type defaultIo struct {
@@ -12,8 +13,21 @@ type defaultIo struct {
 	style  iogo.Style
 }
 
-func CreateDefaultReadWriter() iogo.Iogo {
-	w, r := writer.NewDefaultWriter(), reader.NewInMemoryReader()
+func CreateDefaultReadWriter(read *os.File, write *os.File) iogo.Iogo {
+	var r iogo.Reader
+	var w iogo.Writer
+
+	if &read == nil {
+		r = reader.NewInMemoryReader(os.Stdin)
+	} else {
+		r = reader.NewInMemoryReader(read)
+	}
+	if &write == nil {
+		w = writer.NewDefaultWriter(os.Stdout)
+	} else {
+		w = writer.NewDefaultWriter(write)
+	}
+
 	return defaultIo{
 		reader: r,
 		writer: w,

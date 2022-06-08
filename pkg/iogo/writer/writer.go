@@ -1,20 +1,23 @@
 package writer
 
 import (
-	"fmt"
+	"os"
 )
 
 type defaultWriter struct {
+	file *os.File
 }
 
-func NewDefaultWriter() *defaultWriter {
-	return &defaultWriter{}
+func NewDefaultWriter(file *os.File) *defaultWriter {
+	return &defaultWriter{
+		file: file,
+	}
 }
 
-func (writer defaultWriter) Write(msg string) {
-	fmt.Print(msg)
+func (writer defaultWriter) Write(msg string) (int, error) {
+	return writer.file.WriteString(msg)
 }
 
-func (writer defaultWriter) Writeln(msg string) {
-	fmt.Println(msg)
+func (writer defaultWriter) Writeln(msg string) (int, error) {
+	return writer.file.WriteString(msg + "\n")
 }

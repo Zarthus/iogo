@@ -12,9 +12,9 @@ type Reader interface {
 // Writer is an interface that defines minimistically how to write to something (that is a terminal/tty/file/some form of stdin)
 type Writer interface {
 	// Write to the output source of the Writer, without ensuring CRLF or LF at the end.
-	Write(msg string)
+	Write(msg string) (int, error)
 	// Writeln writes to the output source of the Writer, ensuring CRLF or LF at the end.
-	Writeln(msg string)
+	Writeln(msg string) (int, error)
 }
 
 // ReaderStyle is a helpful subset of helper methods that help receive input in a desired format.

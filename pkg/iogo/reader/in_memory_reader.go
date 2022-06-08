@@ -10,17 +10,19 @@ import (
 // Maintains an active list of history based in memory
 // The moment the software closes, the history is gone
 type inMemoryReader struct {
+	file    *os.File
 	history iogo.HistoryTracker
 }
 
-func NewInMemoryReader() *inMemoryReader {
+func NewInMemoryReader(file *os.File) *inMemoryReader {
 	return &inMemoryReader{
+		file,
 		history.NewHistoryTracker([]string{}),
 	}
 }
 
 func (r inMemoryReader) Readln(options iogo.Options) (string, error) {
-	input, err := raw.Read(os.Stdin, r.history)
+	input, err := raw.Read(r.file, r.history)
 
 	if err != nil {
 		return r.fallback(input, &options), err

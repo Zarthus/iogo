@@ -1,7 +1,10 @@
 package style
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestCreateDefaultReadWriter(t *testing.T) {
-	CreateDefaultReadWriter()
+	CreateDefaultReadWriter(os.Stdin, os.Stdout)
 }

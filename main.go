@@ -44,7 +44,7 @@ func main() {
 }
 
 func demo(f flags) int {
-	rw := style.CreateDefaultReadWriter()
+	rw := style.CreateDefaultReadWriter(os.Stdin, os.Stdout)
 
 	if f.helpFlag {
 		rw.Writer().Write(helpText)
