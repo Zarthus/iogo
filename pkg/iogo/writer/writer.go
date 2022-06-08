@@ -1,6 +1,7 @@
 package writer
 
 import (
+	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"os"
 )
 
@@ -14,10 +15,18 @@ func NewDefaultWriter(file *os.File) *defaultWriter {
 	}
 }
 
-func (writer defaultWriter) Write(msg string) (int, error) {
-	return writer.file.WriteString(msg)
+func (w *defaultWriter) Write(p []byte) (int, error) {
+	return w.file.Write(p)
 }
 
-func (writer defaultWriter) Writeln(msg string) (int, error) {
-	return writer.file.WriteString(msg + "\n")
+func (w *defaultWriter) Writeln(msg string) (int, error) {
+	return w.WriteString(msg + iogo.OsLineEndings)
+}
+
+func (w *defaultWriter) WriteString(msg string) (int, error) {
+	return w.file.WriteString(msg)
+}
+
+func (w *defaultWriter) Close() error {
+	return w.file.Close()
 }

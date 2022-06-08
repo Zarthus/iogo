@@ -1,8 +1,8 @@
-package style
+package writer
 
 import (
+	"github.com/zarthus/iogo/v2/internal"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	"github.com/zarthus/iogo/v2/pkg/iogo/stringtools"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"github.com/zarthus/iogo/v2/pkg/iogo/term"
@@ -65,7 +65,7 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 		msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(msg)))
 		style.writer.Writeln(prefix + padding + msg + msgpadding + suffix)
 	} else {
-		for _, m := range stringtools.Wrap(msg, cols-blockPadding*2) {
+		for _, m := range internal.Wrap(msg, cols-blockPadding*2) {
 			msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(m)))
 			style.writer.Writeln(prefix + padding + m + msgpadding + suffix)
 		}
@@ -103,7 +103,7 @@ func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBa
 		runnable(bar)
 	}
 	progress.Render(style.writer, bar, bf)
-	style.writer.Write("\n")
+	style.writer.Write([]byte("\n"))
 }
 
 func (style writerStyle) autodetectProgressFormatter() iogo.ProgressBarFormatter {

@@ -1,9 +1,9 @@
 package reader
 
 import (
+	"github.com/zarthus/iogo/v2/internal"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/reader/history"
-	"github.com/zarthus/iogo/v2/pkg/iogo/reader/raw"
 	"os"
 )
 
@@ -21,30 +21,41 @@ func NewInMemoryReader(file *os.File) *inMemoryReader {
 	}
 }
 
+func (r inMemoryReader) Read(p []byte) (n int, err error) {
+	return r.file.Read(p)
+}
+
 func (r inMemoryReader) Readln(options iogo.Options) (string, error) {
-	input, err := raw.Read(r.file, r.history)
+	input, err := internal.Read(r.file, r.history)
 
 	if err != nil {
-		return r.fallback(input, &options), err
+		return *r.fallback(input, &options), err
 	}
 
-	r.trackHistory(input, &options)
-	return r.fallback(input, &options), err
+	fb := *r.fallback(input, &options)
+	if input != nil {
+		r.trackHistory(*input, &options)
+	}
+	return fb, err
 }
 
 func (r inMemoryReader) Reset() {
 	r.history.Reset()
 }
 
-func (r inMemoryReader) fallback(input string, opts *iogo.Options) string {
-	if input == "" {
-		return *opts.Default
+func (r inMemoryReader) Close() error {
+	return r.file.Close()
+}
+
+func (r inMemoryReader) fallback(input *string, opts *iogo.Options) *string {
+	if input == nil {
+		return opts.Default
 	}
 	return input
 }
 
 func (r inMemoryReader) trackHistory(input string, opts *iogo.Options) {
-	if !opts.DoNotTrack && input != "" {
+	if opts != nil && !opts.DoNotTrack && input != "" {
 		r.history.Track(input)
 	}
 }

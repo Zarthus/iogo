@@ -1,7 +1,14 @@
 package iogo
 
+import (
+	"io"
+)
+
 // Reader is an interface that defines minimistically how to read from somewhere (that is a terminal/tty/some form of stdin)
 type Reader interface {
+	io.Reader
+	io.Closer
+
 	// Readln reads input into a string.
 	Readln(opts Options) (string, error)
 
@@ -11,10 +18,25 @@ type Reader interface {
 
 // Writer is an interface that defines minimistically how to write to something (that is a terminal/tty/file/some form of stdin)
 type Writer interface {
-	// Write to the output source of the Writer, without ensuring CRLF or LF at the end.
-	Write(msg string) (int, error)
+	io.Writer
+	io.Closer
+
+	// WriteString writes to the output source of the Writer
+	WriteString(msg string) (int, error)
 	// Writeln writes to the output source of the Writer, ensuring CRLF or LF at the end.
 	Writeln(msg string) (int, error)
+}
+
+// Iogo is an io.ReadWriter the combination of input (Reader) and output (Writer) offering the bare essentials,
+// and Style which adds the extra flavour you actually need to make things pretty and awesome.
+type Iogo interface {
+	io.ReadWriteCloser
+
+	Reader() Reader
+	Writer() Writer
+
+	OutputStyle() WriterStyle
+	InputStyle() ReaderStyle
 }
 
 // ReaderStyle is a helpful subset of helper methods that help receive input in a desired format.
@@ -64,21 +86,6 @@ type WriterStyle interface {
 	// It is expected that the inside of the runnable calls ProgressBar.Advance to ensure the bar finishes
 	// at some point. Therefore, caution: Your program can run into an infinite loop on misuse.
 	Progress(bar ProgressBar, runnable func(bar ProgressBar), barFormatter *ProgressBarFormatter)
-}
-
-// Style is a combination object that merges ReaderStyle and WriterStyle in one coherent structure, while also offering
-// the toolkit for anything that needs "both" in and output or doesn't really strongly fit in one category.
-type Style interface {
-	Input() ReaderStyle
-	Output() WriterStyle
-}
-
-// Iogo is the combination of input (Reader) and output (Writer) offering the bare essentials,
-// and Style which adds the extra flavour you actually need to make things pretty and awesome.
-type Iogo interface {
-	Reader() Reader
-	Writer() Writer
-	Style() Style
 }
 
 // ProgressBar helps render progress on some task

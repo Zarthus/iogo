@@ -1,4 +1,4 @@
-package style
+package reader
 
 import (
 	"fmt"
@@ -6,6 +6,10 @@ import (
 	"regexp"
 	"strings"
 )
+
+// TODO: find a good way to handle the multitude of rare errors if cannot write but can receive
+// in most* cases this should go fine, but e.g. writing to a closed file is a realistic scenario
+// and may lead to bad UX.
 
 type readerStyle struct {
 	writer iogo.Writer
@@ -24,11 +28,7 @@ func NewReaderStyle(reader iogo.Reader, writer iogo.Writer) iogo.ReaderStyle {
 
 func (style readerStyle) Prompt(prompt string, options iogo.Options) (string, error) {
 	style.writer.Writeln(prompt)
-	return style.reader.Readln(options)
-}
 
-func (style readerStyle) RequirePrompt(prompt string, options iogo.Options) (string, error) {
-	style.writer.Writeln(prompt)
 	return style.reader.Readln(options)
 }
 

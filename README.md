@@ -34,9 +34,9 @@ Refer to `main.go` for a detailed example.
 ### Very basic usage
 
 ```go
-rw := style.CreateDefaultReadWriter()
+rw := style.CreateStdReadWriter()
 
-rw.Writer().Writeln("What's your name?") // Or use `name, err := rw.Style().Input().Prompt(...)`
+rw.Writer().Writeln("What's your name?") // Or use `name, err := rw.InputStyle().Prompt(...)`
 if name, err := rw.Reader().Readln(); err != nil {
     panic(err)
 } else {
@@ -47,9 +47,9 @@ if name, err := rw.Reader().Readln(); err != nil {
 ### Input handling
 
 ```go
-rw := style.CreateDefaultReadWriter()
+rw := style.CreateStdReadWriter()
 
-confirmed, err := rw.Style().Input().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
+confirmed, err := rw.InputStyle().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
 if err != nil {
     panic(err)
 }
@@ -62,10 +62,10 @@ if confirmed {
 ### Output handling
 
 ```go
-rw := style.CreateDefaultReadWriter()
+rw := style.CreateStdReadWriter()
 
-rw.Style().Output().Title("Welcome to iogo!")
-rw.Style().Output().Success("You have installed the software correctly!")
+rw.OutputStyle().Title("Welcome to iogo!")
+rw.OutputStyle().Success("You have installed the software correctly!")
 ```
 
 ## Supported Terminal Emulator Versions

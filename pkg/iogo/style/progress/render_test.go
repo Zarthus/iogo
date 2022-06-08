@@ -12,7 +12,10 @@ func TestRender(t *testing.T) {
 	bar.Advance(3)
 
 	writer := test.NewNullWriter()
-	Render(writer, bar, formatter.NewSimpleProgressBarFormatter(nil))
+	err := Render(writer, bar, formatter.NewSimpleProgressBarFormatter(nil))
+	if err != nil {
+		t.Fatalf("unexpected err, %s", err.Error())
+	}
 
 	if len(writer.Get()) != 1 {
 		t.Fatalf("Expected writer to receive one message, got %d", len(writer.Get()))

@@ -1,4 +1,4 @@
-package stringtools
+package internal
 
 import (
 	"strings"

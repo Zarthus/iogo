@@ -1,4 +1,4 @@
-package raw
+package internal
 
 import (
 	"bufio"
@@ -7,17 +7,17 @@ import (
 	"io"
 )
 
-func Read(rd io.Reader, tracker iogo.HistoryTracker) (string, error) {
+func Read(rd io.Reader, tracker iogo.HistoryTracker) (*string, error) {
 	r := bufio.NewReader(rd)
 	keyUp, keyDown := byte(iogo.KeyUp), byte(iogo.KeyDown)
 
 	var buf bytes.Buffer
 	for {
 		if b, err := r.ReadByte(); err != nil {
-			//if err == io.EOF {
-			//	break
-			//}
-			break
+			if err == io.EOF {
+				break
+			}
+			return nil, err
 		} else if b == keyUp {
 			// TODO: modify input to history next
 		} else if b == keyDown {
@@ -29,5 +29,6 @@ func Read(rd io.Reader, tracker iogo.HistoryTracker) (string, error) {
 		}
 	}
 
-	return buf.String(), nil
+	s := buf.String()
+	return &s, nil
 }

@@ -44,10 +44,10 @@ func main() {
 }
 
 func demo(f flags) int {
-	rw := style.CreateDefaultReadWriter(os.Stdin, os.Stdout)
+	rw := style.CreateReadWriter(os.Stdin, os.Stdout)
 
 	if f.helpFlag {
-		rw.Writer().Write(helpText)
+		rw.Writer().WriteString(helpText)
 		return 0
 	}
 	if f.selectFlag && f.confirmFlag {
@@ -62,7 +62,7 @@ func demo(f flags) int {
 		panic(err)
 	}
 
-	rw.Style().Output().Success("Output: " + inp)
+	rw.OutputStyle().Success("Output: " + inp)
 	return 0
 }
 
@@ -71,14 +71,14 @@ func readInput(rw iogo.Iogo, f flags) (string, error) {
 		DoNotTrack: true,
 	}
 
-	rw.Style().Output().Title("Welcome to iogo!")
-	inStyle := rw.Style().Input()
+	rw.OutputStyle().Title("Welcome to iogo!")
+	inStyle := rw.InputStyle()
 
 	if f.progressFlag {
 		bar := progress.NewDefaultProgressBar(10)
 		descriptor := "Determining which input to offer.."
 		fmter := formatter.NewSimpleProgressBarFormatter(&descriptor)
-		rw.Style().Output().Progress(bar, func(progressBar iogo.ProgressBar) {
+		rw.OutputStyle().Progress(bar, func(progressBar iogo.ProgressBar) {
 			progressBar.Advance(1)
 			time.Sleep(100 * time.Millisecond)
 		}, &fmter)

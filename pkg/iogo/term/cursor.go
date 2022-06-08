@@ -16,39 +16,45 @@ const (
 
 type CursorInstruction struct {
 	writer iogo.Writer
+	// Err holds the first retrieved error since the lifecycle of this instance
+	// it is likely that if any instruction failed, most after would have as well.
+	Err error
 }
 
 func (c *CursorInstruction) Up(num int) *CursorInstruction {
-	c.writer.Write(fmt.Sprintf(string(cursorUp), num))
-	return c
+	return c.handle(fmt.Sprintf(string(cursorUp), num))
 }
 
 func (c *CursorInstruction) Down(num int) *CursorInstruction {
-	c.writer.Write(fmt.Sprintf(string(cursorDown), num))
-	return c
+	return c.handle(fmt.Sprintf(string(cursorDown), num))
 }
 
 func (c *CursorInstruction) Forward(num int) *CursorInstruction {
-	c.writer.Write(fmt.Sprintf(string(cursorForward), num))
-	return c
+	return c.handle(fmt.Sprintf(string(cursorForward), num))
 }
 
 func (c *CursorInstruction) Backward(num int) *CursorInstruction {
-	c.writer.Write(fmt.Sprintf(string(cursorBackward), num))
-	return c
+	return c.handle(fmt.Sprintf(string(cursorBackward), num))
 }
 
 func (c *CursorInstruction) SavePosition() *CursorInstruction {
-	c.writer.Write(string(CursorSave))
-	return c
+	return c.handle(string(CursorSave))
 }
 
 func (c *CursorInstruction) RestorePosition() *CursorInstruction {
-	c.writer.Write(string(CursorRestore))
-	return c
+	return c.handle(string(CursorRestore))
 }
 
 func (c *CursorInstruction) Write(msg string) *CursorInstruction {
-	c.writer.Write(msg)
+	return c.handle(msg)
+}
+
+func (c *CursorInstruction) handle(msg string) *CursorInstruction {
+	_, err := c.writer.WriteString(msg)
+	if err != nil {
+		if c.Err == nil {
+			c.Err = err
+		}
+	}
 	return c
 }

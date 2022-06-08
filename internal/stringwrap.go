@@ -1,4 +1,4 @@
-package stringtools
+package internal
 
 func Wrap(s string, maxlength uint) []string {
 	staticSlen := uint(len(s))
