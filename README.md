@@ -1,7 +1,7 @@
 # iogo 
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Go Reference](https://pkg.go.dev/badge/github.com/Zarthus/iogo.svg)](https://pkg.go.dev/github.com/Zarthus/iogo)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Zarthus/iogo.svg)](https://pkg.go.dev/github.com/Zarthus/iogo/v2)
 ![Code Climate coverage](https://img.shields.io/codeclimate/coverage/zarthus/iogo)
 ![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/zarthus/iogo)
 
@@ -41,7 +41,7 @@ rw.Writer().Writeln("What's your name?") // Or use `name, err := rw.Style().Inpu
 if name, err := rw.Reader().Readln(); err != nil {
     panic(err)
 } else {
-    rw.Writer().WriteLine("Nice to meet you, " + name)
+    rw.Writer().Writeln("Nice to meet you, " + name)
 }
 ```
 
