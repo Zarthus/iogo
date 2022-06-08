@@ -7,17 +7,17 @@ import (
 )
 
 type defaultIo struct {
-	writer iogo.Writer
 	reader iogo.Reader
+	writer iogo.Writer
 	style  iogo.Style
 }
 
 func CreateDefaultReadWriter() iogo.Iogo {
 	w, r := writer.NewDefaultWriter(), reader.NewInMemoryReader()
 	return defaultIo{
-		writer: w,
 		reader: r,
-		style:  createDefaultStyle(w, r),
+		writer: w,
+		style:  createDefaultStyle(r, w),
 	}
 }
 

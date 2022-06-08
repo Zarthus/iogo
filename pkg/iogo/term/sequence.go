@@ -2,7 +2,6 @@ package term
 
 import (
 	"fmt"
-	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
 )
 
@@ -39,13 +38,6 @@ const (
 	bgColour      ControlSequence = "\033[%dm"
 	bgColourLight ControlSequence = "\033[%dm"
 	Redraw        ControlSequence = "\033c"
-
-	CursorSave     ControlSequence = "\033[s"
-	CursorRestore  ControlSequence = "\033[u"
-	cursorUp       ControlSequence = "\033[%dA\r"
-	cursorDown     ControlSequence = "\033[%dB\r"
-	cursorForward  ControlSequence = "\033[%dC\r"
-	cursorBackward ControlSequence = "\033[%dD\r"
 )
 
 func Colourize(c col.Colour, bright bool) string {
@@ -72,11 +64,4 @@ func WrapColour(colour col.Colour, s string, bright bool) string {
 
 func WrapBackgroundColour(colour col.Colour, s string, bright bool) string {
 	return BackgroundColourize(colour, bright) + s + string(Reset)
-}
-
-// SafeCursorInteraction stores the cursor position, and returns it to its original position after executing arbitrary code
-func SafeCursorInteraction(w iogo.Writer, callable func()) {
-	w.Write(string(CursorSave))
-	callable()
-	w.Write(string(CursorRestore))
 }

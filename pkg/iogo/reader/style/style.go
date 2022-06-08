@@ -14,7 +14,7 @@ type readerStyle struct {
 	confirmRegexp *regexp.Regexp
 }
 
-func NewReaderStyle(writer iogo.Writer, reader iogo.Reader) iogo.ReaderStyle {
+func NewReaderStyle(reader iogo.Reader, writer iogo.Writer) iogo.ReaderStyle {
 	return &readerStyle{
 		writer:        writer,
 		reader:        reader,

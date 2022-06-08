@@ -11,10 +11,10 @@ type defaultStyle struct {
 	output iogo.WriterStyle
 }
 
-func createDefaultStyle(w iogo.Writer, r iogo.Reader) iogo.Style {
+func createDefaultStyle(r iogo.Reader, w iogo.Writer) iogo.Style {
 	return defaultStyle{
-		input:  reader.NewReaderStyle(w, r),
-		output: writer.NewWriterStyle(w, r),
+		input:  reader.NewReaderStyle(r, w),
+		output: writer.NewWriterStyle(r, w),
 	}
 }
 

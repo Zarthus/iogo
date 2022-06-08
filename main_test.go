@@ -28,6 +28,12 @@ func TestFunc(t *testing.T) {
 		t.Fail()
 	}
 
+	stdout.WriteString("y\n")
+	if demo(flags{confirmFlag: true}) != 0 {
+		resetStdInOut()
+		t.Fail()
+	}
+
 	stdout.WriteString("inp\n")
 	if demo(flags{progressFlag: true}) != 0 {
 		resetStdInOut()

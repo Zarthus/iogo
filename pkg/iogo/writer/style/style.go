@@ -20,7 +20,7 @@ type writerStyle struct {
 
 const blockPadding = 2
 
-func NewWriterStyle(w iogo.Writer, r iogo.Reader) iogo.WriterStyle {
+func NewWriterStyle(r iogo.Reader, w iogo.Writer) iogo.WriterStyle {
 	return &writerStyle{
 		info:   term.Detect(),
 		reader: r,
