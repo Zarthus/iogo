@@ -6,6 +6,20 @@ import (
 	"testing"
 )
 
+func TestDefaultStyle_Input(t *testing.T) {
+	r, w := test.NewNullReader("y"), test.NewNullWriter()
+	style := createDefaultStyle(r, w)
+
+	style.Input()
+}
+
+func TestDefaultStyle_Output(t *testing.T) {
+	r, w := test.NewNullReader("y"), test.NewNullWriter()
+	style := createDefaultStyle(r, w)
+
+	style.Output()
+}
+
 func TestDefaultStyle(t *testing.T) {
 	r, w := test.NewNullReader("y"), test.NewNullWriter()
 	style := createDefaultStyle(r, w)
