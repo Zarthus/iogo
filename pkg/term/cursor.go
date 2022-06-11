@@ -2,7 +2,7 @@ package term
 
 import (
 	"fmt"
-	"github.com/zarthus/iogo/v2/pkg/iogo"
+	"io"
 )
 
 const (
@@ -19,7 +19,7 @@ const (
 )
 
 type CursorInstruction struct {
-	Writer iogo.Writer
+	Writer io.Writer
 
 	// Err holds the first retrieved error since the lifecycle of this instance
 	// it is likely that if any instruction failed, most after would have as well.
@@ -47,7 +47,7 @@ func (c *CursorInstruction) Write(msg string) *CursorInstruction {
 }
 
 func (c *CursorInstruction) handle(msg string) *CursorInstruction {
-	_, err := c.Writer.WriteString(msg)
+	_, err := c.Writer.Write([]byte(msg))
 	c.handleErr(&err)
 	return c
 }
