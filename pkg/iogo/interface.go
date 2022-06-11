@@ -82,10 +82,15 @@ type WriterStyle interface {
 	// Error is an alias for Block with appropriate colour (if supported), or a sane fallback
 	Error(msg string)
 
-	// Progress Renders starts the Progress bar, and loops the runnable until the bar is finished.
+	// Progress is an alias of ProgressBar but creates a Default ProgressBar for you and only supports single progress bar
+	Progress(max uint, runnable func(bar ProgressBar), barFormatter *ProgressBarFormatter) error
+	// ProgressBar starts the Progress bar(s), and loops the runnable until the bar is finished
+	//
 	// It is expected that the inside of the runnable calls ProgressBar.Advance to ensure the bar finishes
-	// at some point. Therefore, caution: Your program can run into an infinite loop on misuse.
-	Progress(bar ProgressBar, runnable func(bar ProgressBar), barFormatter *ProgressBarFormatter)
+	// at some point. Therefore, caution: Your program can run into an infinite loop on misuse
+	//
+	// The runnable should be executed inside a goroutine
+	ProgressBar(bars []ProgressBarContainer) error
 }
 
 // ProgressBar helps render progress on some task
@@ -95,7 +100,7 @@ type ProgressBar interface {
 	// SetMaximum increases or decreases the maximum value the progress bar can take (even while it is running).
 	// Behaviour of SetMaximum may vary by implementation of the ProgressBar based on if the Current progression
 	// exceeds the new Maximum value
-	SetMaximum(max uint)
+	SetMaximum(max uint) error
 
 	// Current returns the current number of the progress
 	Current() uint
@@ -112,6 +117,13 @@ type ProgressBar interface {
 type ProgressBarFormatter interface {
 	// Format a progress bar into a readable string
 	Format(bar ProgressBar) string
+}
+
+// ProgressBarContainer contains all the necessary arguments to successfully render one or more ProgressBar
+type ProgressBarContainer struct {
+	Bar       ProgressBar
+	Runnable  func(bar ProgressBar)
+	Formatter *ProgressBarFormatter
 }
 
 // HistoryTracker keeps track of Reader input to later be reused for e.g. autocompletion

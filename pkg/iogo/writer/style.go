@@ -9,6 +9,7 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
 	"math"
 	"strings"
+	"time"
 )
 
 type writerStyle struct {
@@ -90,24 +91,50 @@ func (style writerStyle) Error(msg string) {
 	style.doBlock(msg, col.Red, "ERROR")
 }
 
-func (style writerStyle) Progress(bar iogo.ProgressBar, runnable func(progressBar iogo.ProgressBar), barFormatter *iogo.ProgressBarFormatter) {
-	var bf iogo.ProgressBarFormatter
+func (style *writerStyle) Progress(max uint, runnable func(bar iogo.ProgressBar), barFormatter *iogo.ProgressBarFormatter) error {
+	var bf *iogo.ProgressBarFormatter
 	if barFormatter == nil {
 		bf = style.autodetectProgressFormatter()
 	} else {
-		bf = *barFormatter
+		bf = barFormatter
 	}
 
-	for !bar.IsFinished() {
-		progress.Render(style.writer, bar, bf)
-		runnable(bar)
-	}
-	progress.Render(style.writer, bar, bf)
-	style.writer.Write([]byte("\n"))
+	return style.ProgressBar([]iogo.ProgressBarContainer{{
+		Bar:       progress.NewDefaultProgressBar(max),
+		Runnable:  runnable,
+		Formatter: bf,
+	}})
 }
 
-func (style writerStyle) autodetectProgressFormatter() iogo.ProgressBarFormatter {
-	return formatter.NewSimpleProgressBarFormatter(nil)
+func (style *writerStyle) ProgressBar(bars []iogo.ProgressBarContainer) (err error) {
+	err = progress.RenderMultiple(style.writer, bars, true)
+	if err != nil {
+		return err
+	}
+
+	barLen := len(bars)
+
+	for _, bar := range bars {
+		go func(b iogo.ProgressBarContainer) {
+			for !b.Bar.IsFinished() {
+				b.Runnable(b.Bar)
+			}
+			barLen--
+		}(bar)
+	}
+
+	for barLen > 0 {
+		err = progress.RenderMultiple(style.writer, bars, false)
+		time.Sleep(time.Millisecond * 10)
+	}
+
+	err = progress.RenderMultiple(style.writer, bars, false)
+	return
+}
+
+func (style writerStyle) autodetectProgressFormatter() *iogo.ProgressBarFormatter {
+	bf := formatter.NewSimpleProgressBarFormatter("")
+	return &bf
 }
 
 func (style writerStyle) doBlock(msg string, col col.Colour, oftype string) {

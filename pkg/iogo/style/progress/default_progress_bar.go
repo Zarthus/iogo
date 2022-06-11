@@ -1,5 +1,9 @@
 package progress
 
+import (
+	"errors"
+)
+
 type defaultProgressBar struct {
 	current uint
 	maximum uint
@@ -16,6 +20,7 @@ func NewDefaultProgressBar(maximum uint) *defaultProgressBar {
 
 func (bar *defaultProgressBar) Advance(num uint) {
 	if bar.locked {
+		// If you want to explicitly only advance when not locked to ensure input is not lost, you can use IsFinished()
 		return
 	}
 
@@ -26,12 +31,12 @@ func (bar *defaultProgressBar) Advance(num uint) {
 	}
 }
 
-func (bar *defaultProgressBar) SetMaximum(max uint) {
+func (bar *defaultProgressBar) SetMaximum(max uint) error {
 	if bar.locked {
-		// TODO: maybe we can avoid panicing, probably impl new error type and return (error)?
-		panic("Cannot set maximum when bar is already finished")
+		return errors.New("cannot set maximum when bar is finished")
 	}
 	bar.maximum = max
+	return nil
 }
 
 func (bar defaultProgressBar) Current() uint {

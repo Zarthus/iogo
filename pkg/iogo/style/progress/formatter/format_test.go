@@ -12,8 +12,7 @@ func TestFormat(t *testing.T) {
 	current, maximum := uint(0), uint(10)
 
 	bar := progress.NewDefaultProgressBar(maximum)
-	descriptor := "Fooing"
-	formatter := NewSimpleProgressBarFormatter(&descriptor)
+	formatter := NewSimpleProgressBarFormatter("Fooing")
 
 	for {
 		format = formatter.Format(bar)

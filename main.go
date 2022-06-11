@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
-	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"os"
 	"time"
@@ -44,7 +43,7 @@ func main() {
 }
 
 func demo(f flags) int {
-	rw := style.CreateReadWriter(os.Stdin, os.Stdout)
+	rw := style.NewStdReadWriter()
 
 	if f.helpFlag {
 		rw.Writer().WriteString(helpText)
@@ -75,11 +74,9 @@ func readInput(rw iogo.Iogo, f flags) (string, error) {
 	inStyle := rw.InputStyle()
 
 	if f.progressFlag {
-		bar := progress.NewDefaultProgressBar(10)
-		descriptor := "Determining which input to offer.."
-		fmter := formatter.NewSimpleProgressBarFormatter(&descriptor)
-		rw.OutputStyle().Progress(bar, func(progressBar iogo.ProgressBar) {
-			progressBar.Advance(1)
+		fmter := formatter.NewSimpleProgressBarFormatter("Determining which input to offer..")
+		rw.OutputStyle().Progress(10, func(bar iogo.ProgressBar) {
+			bar.Advance(1)
 			time.Sleep(100 * time.Millisecond)
 		}, &fmter)
 	}

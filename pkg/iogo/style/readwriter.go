@@ -15,8 +15,8 @@ type readwriter struct {
 	writerStyle iogo.WriterStyle
 }
 
-// CreateStdReadWriter initializes an iogo.Iogo instance with os.Stdin and os.Stdout
-func CreateStdReadWriter() iogo.Iogo {
+// NewStdReadWriter initializes an iogo.Iogo instance with os.Stdin and os.Stdout
+func NewStdReadWriter() iogo.Iogo {
 	r := reader.NewInMemoryReader(os.Stdin)
 	w := writer.NewDefaultWriter(os.Stdout)
 
@@ -29,7 +29,7 @@ func CreateStdReadWriter() iogo.Iogo {
 	}
 }
 
-func CreateReadWriter(read *os.File, write *os.File) iogo.Iogo {
+func NewReadWriter(read *os.File, write *os.File) iogo.Iogo {
 	r := reader.NewInMemoryReader(read)
 	w := writer.NewDefaultWriter(write)
 
