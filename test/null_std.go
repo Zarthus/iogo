@@ -19,9 +19,9 @@ func (reset *StdReset) Init() (err error) {
 	return
 }
 
-func (reset StdReset) Reset() {
-	reset.oldIn = os.Stdin
-	reset.oldOut = os.Stdout
+func (reset *StdReset) Reset() {
+	os.Stdin.Close()
+	os.Stdout.Close()
 
 	os.Stdin = reset.oldIn
 	os.Stdout = reset.oldOut
