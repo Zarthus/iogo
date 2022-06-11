@@ -12,7 +12,7 @@ func TestRender(t *testing.T) {
 	bar.Advance(3)
 
 	writer := test.NewNullWriter()
-	err := Render(writer, bar, formatter.NewSimpleProgressBarFormatter(nil))
+	err := Render(writer, bar, formatter.NewSimpleProgressBarFormatter(""))
 	if err != nil {
 		t.Fatalf("unexpected err, %s", err.Error())
 	}

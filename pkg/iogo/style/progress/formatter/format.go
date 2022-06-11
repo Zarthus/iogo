@@ -9,10 +9,11 @@ import (
 )
 
 type simpleProgressBarFormatter struct {
-	descriptor *string
+	descriptor string
 }
 
-func NewSimpleProgressBarFormatter(descriptor *string) iogo.ProgressBarFormatter {
+// NewSimpleProgressBarFormatter empty strings are valid
+func NewSimpleProgressBarFormatter(descriptor string) iogo.ProgressBarFormatter {
 	return &simpleProgressBarFormatter{
 		descriptor: descriptor,
 	}
@@ -26,17 +27,12 @@ func (formatter simpleProgressBarFormatter) Format(bar iogo.ProgressBar) string 
 	// be identical. This may 'glitch' formatting when bar.SetMaximum() is called, but oh well.
 	printfLeading := strconv.Itoa(1 + int(math.Log10(float64(max))))
 
-	desc := ""
-	if formatter.descriptor != nil {
-		desc = *formatter.descriptor
-	}
-
 	return fmt.Sprintf(
 		"[%-10s] %"+printfLeading+"d/%d (%5.1f%%) %s",
 		strings.Repeat("#", bars),
 		bar.Current(),
 		bar.Maximum(),
 		percentage,
-		desc,
+		formatter.descriptor,
 	)
 }

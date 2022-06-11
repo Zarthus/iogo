@@ -7,25 +7,25 @@ import (
 )
 
 func TestCreateStdReadWriter(t *testing.T) {
-	CreateStdReadWriter()
+	NewStdReadWriter()
 }
 
 func TestCreateReadWriter(t *testing.T) {
-	CreateReadWriter(os.Stdin, os.Stdout)
+	NewReadWriter(os.Stdin, os.Stdout)
 }
 
 func TestReadwriter_InputStyle(t *testing.T) {
-	CreateStdReadWriter().InputStyle()
+	NewStdReadWriter().InputStyle()
 }
 
 func TestReadwriter_OutputStyle(t *testing.T) {
-	CreateStdReadWriter().OutputStyle()
+	NewStdReadWriter().OutputStyle()
 }
 
 func TestReadwriter_Close(t *testing.T) {
 	f1, f2 := test.NullFile(), test.NullFile()
 
-	err := CreateReadWriter(f1, f2).Close()
+	err := NewReadWriter(f1, f2).Close()
 	if err != nil {
 		t.Fatalf("expected nil error, got %s", err.Error())
 	}
