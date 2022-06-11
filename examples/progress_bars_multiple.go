@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func MultipleProgressBars() {
+func ProgressBarsMultiple() {
 	io := style.NewStdReadWriter()
 	bf1, bf2, bf3 := formatter.NewSimpleProgressBarFormatter("Bar 1"),
 		formatter.NewSimpleProgressBarFormatter("Bar 2"),

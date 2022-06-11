@@ -124,7 +124,7 @@ func (style *writerStyle) ProgressBar(bars []iogo.ProgressBarContainer) (err err
 	}
 
 	for barLen > 0 {
-		err = progress.RenderMultiple(style.writer, bars, false)
+		progress.RenderMultiple(style.writer, bars, false)
 		time.Sleep(time.Millisecond * 10)
 	}
 
