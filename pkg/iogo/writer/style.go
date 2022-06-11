@@ -5,15 +5,15 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
-	"github.com/zarthus/iogo/v2/pkg/iogo/term"
-	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
+	term2 "github.com/zarthus/iogo/v2/pkg/term"
+	"github.com/zarthus/iogo/v2/pkg/term/col"
 	"math"
 	"strings"
 	"time"
 )
 
 type writerStyle struct {
-	info term.TerminalInfo
+	info term2.TerminalInfo
 
 	reader iogo.Reader
 	writer iogo.Writer
@@ -23,7 +23,7 @@ const blockPadding = 2
 
 func NewWriterStyle(r iogo.Reader, w iogo.Writer) iogo.WriterStyle {
 	return &writerStyle{
-		info:   term.Detect(),
+		info:   term2.Detect(),
 		reader: r,
 		writer: w,
 	}
@@ -53,8 +53,8 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 	var suffix string
 
 	if options.BgColour != nil {
-		prefix = term.BackgroundColourize(*options.BgColour, true)
-		suffix = string(term.Reset)
+		prefix = term2.BackgroundColourize(*options.BgColour, true)
+		suffix = string(term2.Reset)
 	} else {
 		prefix = ""
 		suffix = ""
@@ -138,7 +138,7 @@ func (style writerStyle) autodetectProgressFormatter() *iogo.ProgressBarFormatte
 }
 
 func (style writerStyle) doBlock(msg string, col col.Colour, oftype string) {
-	if style.info.Colours != term.NoColourSupport {
+	if style.info.Colours != term2.NoColourSupport {
 		style.Block(msg, iogo.Options{BgColour: &col})
 	} else {
 		style.Block(oftype+": "+msg, iogo.Options{})

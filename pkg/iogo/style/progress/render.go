@@ -2,13 +2,13 @@ package progress
 
 import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	"github.com/zarthus/iogo/v2/pkg/iogo/term"
+	term2 "github.com/zarthus/iogo/v2/pkg/term"
 )
 
 func Render(w iogo.Writer, bar iogo.ProgressBar, formatter iogo.ProgressBarFormatter) error {
 	formatted := formatter.Format(bar)
 
-	_, err := w.WriteString(string(term.CarriageReturn) + formatted)
+	_, err := w.WriteString(string(term2.CarriageReturn) + formatted)
 	return err
 }
 
@@ -16,11 +16,11 @@ func RenderMultiple(w iogo.Writer, bars []iogo.ProgressBarContainer, first bool)
 	barLen := len(bars)
 
 	if !first {
-		cin := term.CursorInstruction{Writer: w}
+		cin := term2.CursorInstruction{Writer: w}
 		cin.Up(barLen)
 	}
 
-	_, err = w.WriteString(string(term.CarriageReturn))
+	_, err = w.WriteString(string(term2.CarriageReturn))
 	if err != nil {
 		return
 	}

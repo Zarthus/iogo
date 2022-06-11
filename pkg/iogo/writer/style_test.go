@@ -2,7 +2,7 @@ package writer
 
 import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
+	"github.com/zarthus/iogo/v2/pkg/term/col"
 	"github.com/zarthus/iogo/v2/test"
 	"testing"
 )

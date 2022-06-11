@@ -1,7 +1,7 @@
 package iogo
 
 import (
-	"github.com/zarthus/iogo/v2/pkg/iogo/term/col"
+	"github.com/zarthus/iogo/v2/pkg/term/col"
 )
 
 type KeyInputs rune
