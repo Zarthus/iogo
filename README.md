@@ -33,42 +33,9 @@ or a `io` based on your purpose.
 
 Refer to `main.go` for a detailed example.
 
-### Very basic usage
+### Examples
 
-```go
-rw := style.CreateStdReadWriter()
-
-rw.Writer().Writeln("What's your name?") // Or use `name, err := rw.InputStyle().Prompt(...)`
-if name, err := rw.Reader().Readln(); err != nil {
-    panic(err)
-} else {
-    rw.Writer().Writeln("Nice to meet you, " + name)
-}
-```
-
-### Input handling
-
-```go
-rw := style.CreateStdReadWriter()
-
-confirmed, err := rw.InputStyle().Confirm("Do you want to go swimming today?", iogo.Options{Default: "y"})
-if err != nil {
-    panic(err)
-}
-
-if confirmed {
-    goSwimming()
-}
-```
-
-### Output handling
-
-```go
-rw := style.CreateStdReadWriter()
-
-rw.OutputStyle().Title("Welcome to iogo!")
-rw.OutputStyle().Success("You have installed the software correctly!")
-```
+Examples are found in [directory ./examples](./examples)
 
 ## Supported Terminal Emulator Versions
 

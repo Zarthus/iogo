@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func SingleProgressBar() {
+func ProgressBarsSingle() {
 	io := style.NewStdReadWriter()
 	bf1 := formatter.NewSimpleProgressBarFormatter("My Progress Bar")
 

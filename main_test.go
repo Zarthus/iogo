@@ -1,54 +1,68 @@
 package main
 
 import (
-	"os"
+	"io/ioutil"
+	"strings"
 	"testing"
 )
 
-func TestFunc(t *testing.T) {
-	oldStdin, oldStdout := os.Stdin, os.Stdout
-	stdin, stdout, err := os.Pipe()
+func TestLoadMappings(t *testing.T) {
+	dir, err := ioutil.ReadDir("./examples")
 	if err != nil {
-		panic(err)
-	}
-	os.Stdin, os.Stdout = stdin, nil
-	resetStdInOut := func() {
-		os.Stdin, os.Stdout = oldStdin, oldStdout
+		return
 	}
 
-	stdout.WriteString("hello\n")
-	if demo(flags{}) != 0 {
-		resetStdInOut()
-		t.Fail()
+	mappings := loadMappings()
+	found := 0
+
+	for _, file := range dir {
+		expected := strings.Replace(file.Name(), ".go", "", 1)
+
+		for _, given := range mappings {
+			if given.Name == expected {
+				found++
+				break
+			}
+		}
 	}
 
-	stdout.WriteString("one\n")
-	if demo(flags{selectFlag: true}) != 0 {
-		resetStdInOut()
-		t.Fail()
+	if len(mappings) != found {
+		t.Fatalf("Number of mappings (%d) is not equal to files in ./example (%d)", len(mappings), found)
+	}
+}
+
+func TestExec(t *testing.T) {
+	value := false
+	mappings := []mapping{
+		{
+			Name:     "foo",
+			Runnable: func() { value = true },
+		},
 	}
 
-	stdout.WriteString("y\n")
-	if demo(flags{confirmFlag: true}) != 0 {
-		resetStdInOut()
-		t.Fail()
-	}
+	exec("foo", mappings)
 
-	stdout.WriteString("inp\n")
-	if demo(flags{progressFlag: true}) != 0 {
-		resetStdInOut()
-		t.Fail()
+	if value != true {
+		t.Fatalf("Expected value to be true")
 	}
+}
 
-	if demo(flags{selectFlag: true, confirmFlag: true, helpFlag: true}) != 0 {
-		resetStdInOut()
-		t.Fail()
+func TestSelectables(t *testing.T) {
+	res := selectables([]mapping{
+		{
+			Name:     "foo",
+			Runnable: func() {},
+		},
+		{
+			Name:     "bar",
+			Runnable: func() {},
+		},
+	})
+
+	if res[0] != "foo" {
+		t.Fatalf("Expected res[0] to be foo, was %s", res[0])
 	}
-
-	if demo(flags{selectFlag: true, confirmFlag: true}) != 1 {
-		resetStdInOut()
-		t.Fail()
+	if res[1] != "bar" {
+		t.Fatalf("Expected res[1] to be bar, was %s", res[1])
 	}
-
-	resetStdInOut()
 }

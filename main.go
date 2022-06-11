@@ -1,100 +1,57 @@
 package main
 
 import (
-	"flag"
+	"fmt"
+	"github.com/zarthus/iogo/v2/examples"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
-	"github.com/zarthus/iogo/v2/pkg/iogo/style/progress/formatter"
 	"os"
-	"time"
 )
 
-var (
-	confirmFlag  = flag.Bool("confirm", false, "use a confirmation question")
-	selectFlag   = flag.Bool("select", false, "use a multiple-choice selection")
-	progressFlag = flag.Bool("progress", false, "shows a progress bar")
-	helpFlag     = flag.Bool("help", false, "show help text")
-)
-
-const helpText = "iogo " + iogo.Version + "\n\n" +
-	"USAGE:\n" +
-	"  --help      this help text\n" +
-	"  --confirm   use a confirmation question\n" +
-	"  --select    use a multiple-choice selection\n" +
-	"  --progress  show a progress bar\n\n"
-
-type flags struct {
-	confirmFlag  bool
-	selectFlag   bool
-	progressFlag bool
-	helpFlag     bool
+type mapping struct {
+	Name     string
+	Runnable func()
 }
 
 func main() {
-	flag.Parse()
-	f := flags{
-		confirmFlag:  *confirmFlag,
-		selectFlag:   *selectFlag,
-		progressFlag: *progressFlag,
-		helpFlag:     *helpFlag,
-	}
-
-	os.Exit(demo(f))
-}
-
-func demo(f flags) int {
 	rw := style.NewStdReadWriter()
-
-	if f.helpFlag {
-		rw.Writer().WriteString(helpText)
-		return 0
-	}
-	if f.selectFlag && f.confirmFlag {
-		rw.Writer().Writeln("Options --confirm and --select cannot be used in conjunction")
-		return 1
-	}
-
-	inp, err := readInput(rw, f)
+	mappings := loadMappings()
+	selection, err := rw.InputStyle().Select("Please select a program to run", selectables(mappings), iogo.Options{})
 
 	if err != nil {
-		rw.Writer().Writeln("error! " + err.Error())
-		panic(err)
+		rw.OutputStyle().Error(err.Error())
+		return
 	}
 
-	rw.OutputStyle().Success("Output: " + inp)
-	return 0
+	rw.OutputStyle().Info("Starting " + selection)
+	exec(selection, mappings)
 }
 
-func readInput(rw iogo.Iogo, f flags) (string, error) {
-	opts := iogo.Options{
-		DoNotTrack: true,
+func loadMappings() []mapping {
+	return []mapping{
+		{"progress_bars_multiple", examples.ProgressBarsMultiple},
+		{"progress_bars_single", examples.ProgressBarsSingle},
+		{"read_confirm", examples.ReadConfirm},
+		{"read_name", examples.ReadName},
+		{"write_style", examples.WriteStyle},
 	}
+}
 
-	rw.OutputStyle().Title("Welcome to iogo!")
-	inStyle := rw.InputStyle()
-
-	if f.progressFlag {
-		fmter := formatter.NewSimpleProgressBarFormatter("Determining which input to offer..")
-		rw.OutputStyle().Progress(10, func(bar iogo.ProgressBar) {
-			bar.Advance(1)
-			time.Sleep(100 * time.Millisecond)
-		}, &fmter)
+func selectables(mappings []mapping) []string {
+	var s []string
+	for _, mappable := range mappings {
+		s = append(s, mappable.Name)
 	}
+	return s
+}
 
-	if f.confirmFlag {
-		n := "n"
-		opts.Default = &n
-
-		if confirmed, err := inStyle.Confirm("Do you agree to the terms and conditions?", opts); err != nil {
-			return "", err
-		} else if confirmed {
-			return "You confirmed!", nil
-		} else {
-			return "You did not confirm.", nil
+func exec(selection string, mappings []mapping) {
+	for _, mappable := range mappings {
+		if mappable.Name == selection {
+			mappable.Runnable()
+			return
 		}
-	} else if f.selectFlag {
-		return inStyle.Select("Pick a number:", []string{"one", "two", "three"}, opts)
-	} else {
-		return inStyle.Prompt("Please insert text:", opts)
 	}
+	_ = fmt.Errorf("could not find program %s", selection)
+	os.Exit(1)
 }
