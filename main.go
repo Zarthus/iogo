@@ -33,6 +33,7 @@ func loadMappings() []mapping {
 		{"progress_bars_single", examples.ProgressBarsSingle},
 		{"read_confirm", examples.ReadConfirm},
 		{"read_name", examples.ReadName},
+		{"write_blocks", examples.WriteBlocks},
 		{"write_style", examples.WriteStyle},
 	}
 }

@@ -13,21 +13,40 @@ func TestLoadMappings(t *testing.T) {
 	}
 
 	mappings := loadMappings()
-	found := 0
+	finds := 0
+	var found bool
+	var missing []string
 
 	for _, file := range dir {
-		expected := strings.Replace(file.Name(), ".go", "", 1)
+		if file.IsDir() {
+			continue
+		}
 
+		expected := strings.Replace(file.Name(), ".go", "", 1)
+		if expected[len(expected)-4:] == "test" {
+			continue
+		}
+
+		found = false
 		for _, given := range mappings {
 			if given.Name == expected {
-				found++
+				found = true
 				break
 			}
 		}
+
+		if !found {
+			missing = append(missing, expected)
+		} else {
+			finds++
+		}
 	}
 
-	if len(mappings) != found {
-		t.Fatalf("Number of mappings (%d) is not equal to files in ./example (%d)", len(mappings), found)
+	if len(missing) != 0 {
+		t.Fatalf("Missing %d mappings: %s", len(missing), strings.Join(missing, ", "))
+	}
+	if len(mappings) != finds {
+		t.Fatalf("Number of mappings (%d) is not equal to files in ./example (%d)", len(mappings), finds)
 	}
 }
 
