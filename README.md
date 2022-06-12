@@ -20,15 +20,14 @@ terminal colours, handling input, and providing styling for output.
 Download the library:
 
 ```bash
-go get github.com/zarthus/iogo
+go get github.com/zarthus/iogo/v2
 ```
 
 ## Usage
 
-In essence: You want to either instantiate a `reader`, a `writer`
-or a `io` based on your purpose.
+In essence: You'll want to create an `iogo.ReadWriter`, the easiest way is with `iogo.style.NewStdReadWriter`
 
-Refer to `main.go` for a detailed example.
+Refer to `main.go` for a detailed list of examples.
 
 ### Examples
 
