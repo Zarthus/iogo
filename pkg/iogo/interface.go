@@ -63,6 +63,14 @@ type WriterStyle interface {
 	// =======
 	Section(msg string)
 
+	// TextBox encapsulates the message inside a text box
+	// +-------------+
+	// |             |
+	// | For example |
+	// |             |
+	// +-------------+
+	TextBox(msg string, opts Options) error
+
 	// Block writes a block to the output of the Writer, by default,
 	// it looks something like this, based on implementation and term support:
 	//
@@ -121,4 +129,8 @@ type ProgressBarContainer struct {
 	Bar       ProgressBar
 	Runnable  func(bar ProgressBar)
 	Formatter *ProgressBarFormatter
+}
+
+type StringWrapper interface {
+	Wrap(s string, maxlength uint) []string
 }

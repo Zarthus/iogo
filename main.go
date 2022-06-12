@@ -6,6 +6,7 @@ import (
 	"github.com/zarthus/iogo/v2/pkg/iogo"
 	"github.com/zarthus/iogo/v2/pkg/iogo/style"
 	"os"
+	"time"
 )
 
 type mapping struct {
@@ -43,6 +44,7 @@ func loadMappings() []mapping {
 		{"read_name", examples.ReadName},
 		{"write_blocks", examples.WriteBlocks},
 		{"write_style", examples.WriteStyle},
+		{"write_textbox", examples.WriteTextBox},
 	}
 }
 
@@ -51,8 +53,9 @@ func multiple() {
 	mappings := m[1:]
 
 	for _, mapped := range mappings {
-		fmt.Printf("%s\n", mapped.Name)
+		fmt.Printf("\n\n%s\n", mapped.Name)
 		mapped.Runnable()
+		time.Sleep(time.Second * 2)
 	}
 }
 

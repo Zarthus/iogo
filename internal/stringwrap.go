@@ -1,6 +1,8 @@
 package internal
 
-func Wrap(s string, maxlength uint) []string {
+type SimpleStringWrapper struct{}
+
+func (sw *SimpleStringWrapper) Wrap(s string, maxlength uint) []string {
 	staticSlen := uint(len(s))
 	slen := staticSlen
 	if maxlength > slen {

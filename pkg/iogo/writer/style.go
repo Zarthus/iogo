@@ -15,17 +15,19 @@ import (
 type writerStyle struct {
 	info term.TerminalInfo
 
-	reader iogo.Reader
-	writer iogo.Writer
+	reader  iogo.Reader
+	writer  iogo.Writer
+	wrapper iogo.StringWrapper
 }
 
 const blockPadding = 2
 
 func NewWriterStyle(r iogo.Reader, w iogo.Writer) iogo.WriterStyle {
 	return &writerStyle{
-		info:   term.Detect(),
-		reader: r,
-		writer: w,
+		info:    term.Detect(),
+		reader:  r,
+		writer:  w,
+		wrapper: &internal.SimpleStringWrapper{},
 	}
 }
 
@@ -39,6 +41,28 @@ func (style writerStyle) Section(msg string) {
 	line := strings.Repeat("=", len(msg))
 
 	style.writer.Writeln(msg + "\n" + line)
+}
+
+func (style writerStyle) TextBox(msg string, options iogo.Options) error {
+	tb := textbox{
+		Info: style.info,
+	}
+
+	box := tb.Format(msg, nil, style.wrapper)
+	if options.BgColour != nil || options.FgColour != nil {
+		split := strings.Split(box, "\n")
+		if options.BgColour != nil {
+			split = style.rewriteLines(split, term.BackgroundColourize(*options.BgColour, false), string(term.Reset))
+		}
+		if options.FgColour != nil {
+			split = style.rewriteLines(split, term.Colourize(*options.FgColour, false), string(term.Reset))
+		}
+
+		box = strings.Join(split, "\n")
+	}
+
+	_, err := style.writer.Writeln(box)
+	return err
 }
 
 func (style writerStyle) Block(msg string, options iogo.Options) {
@@ -66,7 +90,7 @@ func (style writerStyle) Block(msg string, options iogo.Options) {
 		msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(msg)))
 		style.writer.Writeln(prefix + padding + msg + msgpadding + suffix)
 	} else {
-		for _, m := range internal.Wrap(msg, cols-blockPadding*2) {
+		for _, m := range style.wrapper.Wrap(msg, cols-blockPadding*2) {
 			msgpadding := strings.Repeat(" ", int(cols)-((blockPadding)+len(m)))
 			style.writer.Writeln(prefix + padding + m + msgpadding + suffix)
 		}
@@ -143,4 +167,14 @@ func (style writerStyle) doBlock(msg string, col col.Colour, oftype string) {
 	} else {
 		style.Block(oftype+": "+msg, iogo.Options{})
 	}
+}
+
+func (style writerStyle) rewriteLines(msg []string, prefix string, suffix string) []string {
+	var message []string
+
+	for _, m := range msg {
+		message = append(message, prefix+m+suffix)
+	}
+
+	return message
 }

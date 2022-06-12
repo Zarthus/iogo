@@ -5,7 +5,9 @@ import (
 	"testing"
 )
 
-func TestWrap(t *testing.T) {
+func TestSimpleStringWrapper_Wrap(t *testing.T) {
+	wrapper := SimpleStringWrapper{}
+
 	cases := []struct {
 		Input     string
 		Output    string
@@ -24,7 +26,7 @@ func TestWrap(t *testing.T) {
 	}
 
 	for i, tc := range cases {
-		actual := strings.Join(Wrap(tc.Input, tc.MaxLength), "\n")
+		actual := strings.Join(wrapper.Wrap(tc.Input, tc.MaxLength), "\n")
 
 		if actual != tc.Output {
 			t.Fatalf(
