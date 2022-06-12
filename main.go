@@ -16,6 +16,13 @@ type mapping struct {
 func main() {
 	rw := style.NewStdReadWriter()
 	mappings := loadMappings()
+
+	if len(os.Args) > 1 {
+		selection := os.Args[1]
+		exec(selection, mappings)
+		return
+	}
+
 	selection, err := rw.InputStyle().Select("Please select a program to run", selectables(mappings), iogo.Options{})
 
 	if err != nil {

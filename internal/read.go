@@ -2,7 +2,6 @@ package internal
 
 import (
 	"bufio"
-	"bytes"
 	"io"
 )
 
@@ -11,20 +10,15 @@ func Read(rd io.Reader) (*string, error) {
 	// reading from key up and key down and deal with history.
 	r := bufio.NewReader(rd)
 
-	var buf bytes.Buffer
-	for {
-		inp, err := r.ReadString('\n')
+	inp, _, err := r.ReadLine()
+	s := string(inp)
 
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return nil, err
+	if err != nil {
+		if err == io.EOF {
+			return &s, nil
 		}
-
-		buf.WriteString(inp)
+		return &s, err
 	}
 
-	s := buf.String()
 	return &s, nil
 }
