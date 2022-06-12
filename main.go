@@ -36,12 +36,23 @@ func main() {
 
 func loadMappings() []mapping {
 	return []mapping{
+		{"all", multiple},
 		{"progress_bars_multiple", examples.ProgressBarsMultiple},
 		{"progress_bars_single", examples.ProgressBarsSingle},
 		{"read_confirm", examples.ReadConfirm},
 		{"read_name", examples.ReadName},
 		{"write_blocks", examples.WriteBlocks},
 		{"write_style", examples.WriteStyle},
+	}
+}
+
+func multiple() {
+	m := loadMappings()
+	mappings := m[1:]
+
+	for _, mapped := range mappings {
+		fmt.Printf("%s\n", mapped.Name)
+		mapped.Runnable()
 	}
 }
 

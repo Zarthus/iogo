@@ -34,6 +34,18 @@ Refer to `main.go` for a detailed example.
 
 Examples are found in [directory ./examples](./examples)
 
+To run an example, you can use 
+
+```
+$ go run main.go filename_without_extension
+```
+
+To run all examples, you can use
+
+```
+$ go run main.go all
+```
+
 ## Supported Terminal Emulator Versions
 
 The aim (though not the resources) is to support "modern" terminals.

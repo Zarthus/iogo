@@ -19,23 +19,23 @@ func ProgressBarsMultiple() {
 			Bar: progress.NewDefaultProgressBar(100),
 			Runnable: func(bar iogo.ProgressBar) {
 				bar.Advance(1)
-				time.Sleep(time.Millisecond * 33)
+				time.Sleep(time.Millisecond * 10)
 			},
 			Formatter: &bf1,
 		},
 		{
-			Bar: progress.NewDefaultProgressBar(125),
+			Bar: progress.NewDefaultProgressBar(225),
 			Runnable: func(bar iogo.ProgressBar) {
 				bar.Advance(2)
-				time.Sleep(time.Millisecond * 50)
+				time.Sleep(time.Millisecond * 15)
 			},
 			Formatter: &bf2,
 		},
 		{
-			Bar: progress.NewDefaultProgressBar(10),
+			Bar: progress.NewDefaultProgressBar(4),
 			Runnable: func(bar iogo.ProgressBar) {
 				bar.Advance(1)
-				time.Sleep(time.Millisecond * 250)
+				time.Sleep(time.Millisecond * 650)
 			},
 			Formatter: &bf3,
 		},

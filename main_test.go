@@ -12,7 +12,8 @@ func TestLoadMappings(t *testing.T) {
 		return
 	}
 
-	mappings := loadMappings()
+	mappingsExt := loadMappings() // remove psuedo "alL"
+	mappings := mappingsExt[1:]
 	finds := 0
 	var found bool
 	var missing []string
