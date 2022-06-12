@@ -3,21 +3,16 @@ package reader
 import (
 	"github.com/zarthus/iogo/v2/internal"
 	"github.com/zarthus/iogo/v2/pkg/iogo"
-	"github.com/zarthus/iogo/v2/pkg/iogo/reader/history"
 	"os"
 )
 
-// Maintains an active list of history based in memory
-// The moment the software closes, the history is gone
 type inMemoryReader struct {
-	file    *os.File
-	history iogo.HistoryTracker
+	file *os.File
 }
 
 func NewInMemoryReader(file *os.File) *inMemoryReader {
 	return &inMemoryReader{
 		file,
-		history.NewHistoryTracker([]string{}),
 	}
 }
 
@@ -26,21 +21,13 @@ func (r inMemoryReader) Read(p []byte) (n int, err error) {
 }
 
 func (r inMemoryReader) Readln(options iogo.Options) (string, error) {
-	input, err := internal.Read(r.file, r.history)
+	input, err := internal.Read(r.file)
 
 	if err != nil {
 		return *r.fallback(input, &options), err
 	}
 
-	fb := *r.fallback(input, &options)
-	if input != nil {
-		r.trackHistory(*input, &options)
-	}
-	return fb, err
-}
-
-func (r inMemoryReader) Reset() {
-	r.history.Reset()
+	return *r.fallback(input, &options), err
 }
 
 func (r inMemoryReader) Close() error {
@@ -52,10 +39,4 @@ func (r inMemoryReader) fallback(input *string, opts *iogo.Options) *string {
 		return opts.Default
 	}
 	return input
-}
-
-func (r inMemoryReader) trackHistory(input string, opts *iogo.Options) {
-	if opts != nil && !opts.DoNotTrack && input != "" {
-		r.history.Track(input)
-	}
 }

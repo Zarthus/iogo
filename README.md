@@ -10,11 +10,8 @@ At it's core, iogo is a reader and a writer that doesn't do a whole more than
 `fmt.Print` and `fmt.Scanf` with pretty styling options, and if you don't need that,
 you probably don't need this library.
 
-Where iogo helps you, is by offering an extensive toolkit for history management,
+Where iogo helps you, is by offering an extensive toolkit for
 terminal colours, handling input, and providing styling for output.
-
-Currently, it is not entirely feature complete (support for table outputting,
-better term detection & 256-colour support are things I'd really like to include).
 
 [![cast](./examples/display/sample.gif)](./examples/display/sample.gif)
 

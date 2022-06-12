@@ -15,7 +15,7 @@ func TestReaderStyle_Confirm(t *testing.T) {
 
 	confirmed, err := r.Confirm("foo", iogo.Options{})
 	if err != nil {
-		t.Fatalf("unexpected err, %s", err.Error())
+		t.Fatalf("unexpected err, %v", err)
 	}
 
 	if !confirmed {
@@ -28,7 +28,7 @@ func TestReaderStyle_Select(t *testing.T) {
 
 	_, err := r.Select("foo", []string{"foo"}, iogo.Options{})
 	if err != nil {
-		t.Fatalf("unexpected err, %s", err.Error())
+		t.Fatalf("unexpected err, %v", err)
 	}
 }
 
@@ -36,6 +36,6 @@ func TestReaderStyle_Prompt(t *testing.T) {
 	r := NewReaderStyle(test.NewNullReader("foo"), test.NewNullWriter())
 
 	if _, err := r.Prompt("foo", iogo.Options{}); err != nil {
-		t.Fatalf("unexpected err, %s", err.Error())
+		t.Fatalf("unexpected err, %v", err)
 	}
 }

@@ -11,9 +11,6 @@ type Reader interface {
 
 	// Readln reads input into a string.
 	Readln(opts Options) (string, error)
-
-	// Reset the state of the Reader, this clears any history and state.
-	Reset()
 }
 
 // Writer is an interface that defines minimistically how to write to something (that is a terminal/tty/file/some form of stdin)
@@ -124,20 +121,4 @@ type ProgressBarContainer struct {
 	Bar       ProgressBar
 	Runnable  func(bar ProgressBar)
 	Formatter *ProgressBarFormatter
-}
-
-// HistoryTracker keeps track of Reader input to later be reused for e.g. autocompletion
-type HistoryTracker interface {
-	// Get the current list of stored history
-	Get() []string
-	// Track a new item to history
-	Track(item string)
-	// Untrack removes an existing item from history
-	// Returns boolean true if item is found and removed, false otherwise
-	Untrack(item string) bool
-	// Save the current history for later re-use, if the current implementation supports saving.
-	// Returns a bool true if saving was successful, or false if it wasn't.
-	Save() bool
-	// Reset the current history back to a clean slate.
-	Reset()
 }

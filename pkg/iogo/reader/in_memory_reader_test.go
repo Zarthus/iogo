@@ -20,24 +20,13 @@ func TestInMemoryReader_Readln(t *testing.T) {
 	r := NewInMemoryReader(test.NullFile())
 
 	if _, err := r.Readln(iogo.Options{}); err != nil {
-		t.Fatalf("paniced: %s", err)
-	}
-}
-
-func TestInMemoryReader_Reset(t *testing.T) {
-	r := NewInMemoryReader(test.NullFile())
-
-	r.history.Track("foo")
-	r.Reset()
-
-	if len(r.history.Get()) != 0 {
-		t.Fatalf("Expected history to be empty")
+		t.Fatalf("paniced: %v", err)
 	}
 }
 
 func TestInMemoryReader_Close(t *testing.T) {
 	err := NewInMemoryReader(test.NullFile()).Close()
 	if err != nil {
-		t.Fatalf("got err: %s", err.Error())
+		t.Fatalf("got err: %v", err)
 	}
 }

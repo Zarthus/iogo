@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// TODO: find a good way to handle the multitude of rare errors if cannot write but can receive
+// TODO: find a good way to handle the multitude of rare errors if we cannot write but can receive
 // in most* cases this should go fine, but e.g. writing to a closed file is a realistic scenario
 // and may lead to bad UX.
 
